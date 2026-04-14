@@ -1,6 +1,5 @@
 package com.Kodebutikken.wishlist.model;
 
-import java.beans.Visibility;
 import java.time.LocalDate;
 import java.util.List;
 
