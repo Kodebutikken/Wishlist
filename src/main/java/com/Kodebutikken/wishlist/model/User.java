@@ -1,14 +1,14 @@
 package com.Kodebutikken.wishlist.model;
 
-public class Profile {
+public class User {
     private long id;
     private String userName;
     private String email;
     private String password;
 
-    public Profile(){}
+    public User(){}
 
-    public Profile(long id, String userName, String email, String password) {
+    public User(long id, String userName, String email, String password) {
         this.id = id;
         this.userName = userName;
         this.email = email;
