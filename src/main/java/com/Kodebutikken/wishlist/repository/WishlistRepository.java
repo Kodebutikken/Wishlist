@@ -30,9 +30,9 @@ public class WishlistRepository {
         return wishlist;
     };
 
-    public List<Wishlist> getWishlistsByUserId(long userId) {
-        String sql = "SELECT * FROM wishlist WHERE user_id = ?";
-        return jdbcTemplate.query(sql, wishlistRowMapper, userId);
+    public List<Wishlist> getWishlistsByProfileId(long profile_id) {
+        String sql = "SELECT * FROM wishlist WHERE profile_id = ?";
+        return jdbcTemplate.query(sql, wishlistRowMapper, profile_id);
     }
 
     private Wishlist getSingleWishlist(String sql, Object param) {
@@ -54,7 +54,7 @@ public class WishlistRepository {
     }
 
     public void createWishlist(Wishlist wishlist, Long userId) {
-        String sql = "INSERT INTO wishlist (due_date, visibility, user_id) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO wishlist (due_date, visibility, profile_id) VALUES (?, ?, ?)";
         jdbcTemplate.update(sql,
                 wishlist.getDueDate(),
                 wishlist.getVisibility().name(),

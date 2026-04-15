@@ -4,9 +4,9 @@ USE wishlist;
 DROP TABLE IF EXISTS wishlist_item;
 DROP TABLE IF EXISTS wishlist;
 DROP TABLE IF EXISTS product;
-DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS profile;
 
-CREATE TABLE users (
+CREATE TABLE profile (
                        id BIGINT AUTO_INCREMENT PRIMARY KEY,
                        username VARCHAR(255) NOT NULL,
                        email VARCHAR(255) NOT NULL,
@@ -23,8 +23,8 @@ CREATE TABLE wishlist (
                           id BIGINT PRIMARY KEY AUTO_INCREMENT,
                           due_date DATE,
                           visibility VARCHAR(20),
-                          user_id BIGINT NOT NULL,
-                          FOREIGN KEY (user_id) REFERENCES users(id)
+                          profile_id BIGINT NOT NULL,
+                          FOREIGN KEY (profile_id) REFERENCES profile(id)
 );
 
 CREATE TABLE wishlist_item (
