@@ -53,12 +53,12 @@ public class WishlistRepository {
         jdbcTemplate.update(sql, quantity, wishlistId, productId);
     }
 
-    public void createWishlist(Wishlist wishlist, Long userId) {
+    public void createWishlist(Wishlist wishlist, Long profile_id) {
         String sql = "INSERT INTO wishlist (due_date, visibility, profile_id) VALUES (?, ?, ?)";
         jdbcTemplate.update(sql,
                 wishlist.getDueDate(),
                 wishlist.getVisibility().name(),
-                userId);
+                profile_id);
     }
 
     public void deleteWishlist(long id) {
