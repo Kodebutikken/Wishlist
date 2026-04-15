@@ -1,10 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Wishlist - Kodebutikken</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 </head>
 <body>
+<main class="container">
+    <h1>Velkommen til Wishlist</h1>
+    <p>Log ind eller opret en bruger for at komme i gang.</p>
 
+    <div class="button-row-10 justify-center">
+        <a th:href="@{/profile/login}">
+            <button type="button">Log ind</button>
+        </a>
+        <a th:href="@{/profile/register}">
+            <button type="button">Opret bruger</button>
+        </a>
+    </div>
+</main>
 </body>
 </html>

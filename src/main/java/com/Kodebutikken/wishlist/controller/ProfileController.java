@@ -1,5 +1,6 @@
 package com.Kodebutikken.wishlist.controller;
 
+import com.Kodebutikken.wishlist.model.Profile;
 import com.Kodebutikken.wishlist.service.ProfileService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/profile")
 public class ProfileController {
-
     private final ProfileService profileService;
 
     public ProfileController(ProfileService profileService) {
@@ -27,13 +27,26 @@ public class ProfileController {
         if(session.getAttribute("user") != null) {
             return "redirect:/profile/wishlists"; // Redirect to wishlists if already logged in
         }
-        return "login"; // Return the view name for the login page
+        return "auth/login"; // Return the view name for the login page
+    }
+
+    @GetMapping("/logout")
+    public String handleLogout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/";
     }
 
     @GetMapping("/register")
-    public String showRegister() {
-        // Logic to show the user registration page
-        return "profile/register"; // Return the view name for the registration page
+    public String showRegister(HttpSession session, Model model) {
+        if(session.getAttribute("user") != null) {
+            return "redirect:/profile/wishlists"; // Redirect to wishlists if already logged in
+        }
+        Profile profile = new Profile();
+        model.addAttribute("profile", profile);
+        model.addAttribute("username", profile.getUserName());
+        model.addAttribute("email", profile.getEmail());
+        model.addAttribute("password", profile.getPassword());
+        return "auth/register"; // Return the view name for the registration page
     }
 
     @PostMapping("/login")
@@ -47,17 +60,17 @@ public class ProfileController {
         boolean isAuthenticated = profileService.login(username, password);
 
         if (!isAuthenticated) {
-            model.addAttribute("error", "Invalid username or password");
-            return "login"; // Return to the login page with an error message
+            model.addAttribute("error", "Forkert brugernavn eller adgangskode.");
+            return "auth/login";
         } else {
-            session.setAttribute("user", username); // Store the username in the session
-            return "redirect:/profiles/wishlists"; // Redirect to the wishlists page after successful login
+            session.setAttribute("user", username);
+            return "redirect:/profile/wishlists";
         }
     }
 
     @PostMapping("/register")
-    public String handleRegister() {
-        // Logic to handle user registration
-        return "redirect:/profile/login"; // Redirect to the login page after successful registration
+    public String handleRegister(@ModelAttribute Profile profile) {
+        profileService.createProfile(profile);
+        return "redirect:/profile/login";
     }
 }

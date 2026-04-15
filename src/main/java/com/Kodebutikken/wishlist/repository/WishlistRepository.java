@@ -1,7 +1,6 @@
 package com.Kodebutikken.wishlist.repository;
 
 import com.Kodebutikken.wishlist.model.Product;
-import com.Kodebutikken.wishlist.model.Profile;
 import com.Kodebutikken.wishlist.model.Visibility;
 import com.Kodebutikken.wishlist.model.Wishlist;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,10 +22,8 @@ public class WishlistRepository {
         if (rs.getDate("due_date") != null) {
             wishlist.setDueDate(rs.getDate("due_date").toLocalDate());
         }
-        wishlist.setVisibility(Visibility.valueOf(rs.getString("visibility")));
-        Profile profile = new Profile();
-        profile.setId(rs.getLong("profile_id"));
-        wishlist.setProfile(profile);
+        wishlist.setVisibility(Visibility.valueOf(rs.getString("visibility"))
+        );
         return wishlist;
     };
 
@@ -35,13 +32,31 @@ public class WishlistRepository {
         return jdbcTemplate.query(sql, wishlistRowMapper, profile_id);
     }
 
+    private Wishlist getSingleWishlist(String sql, Object param) {
+        return jdbcTemplate.queryForObject(sql, wishlistRowMapper, param);
+    }
+
+    public Wishlist getWishlistById(long id) {
+        String sql = "SELECT * FROM wishlist WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, wishlistRowMapper, id);
+    }
+
+    public void removeProductFromWishlist(Long wishlistId, Long productId) {
+        String sql = "DELETE FROM wishlist_item WHERE wishlist_id = ? AND product_id = ?";
+        jdbcTemplate.update(sql, wishlistId, productId);
+    }
+
+    public void updateQuantityInWishlist(Long wishlistId, Long productId, int quantity) {
+        String sql = "UPDATE wishlist_item SET quantity = ? WHERE wishlist_id = ? AND product_id = ?";
+        jdbcTemplate.update(sql, quantity, wishlistId, productId);
+    }
+
     public void createWishlist(Wishlist wishlist, Long profile_id) {
         String sql = "INSERT INTO wishlist (due_date, visibility, profile_id) VALUES (?, ?, ?)";
         jdbcTemplate.update(sql,
                 wishlist.getDueDate(),
                 wishlist.getVisibility().name(),
                 profile_id);
-        jdbcTemplate.update(sql, wishlist.getDueDate(), wishlist.getVisibility().name(), profile_id);
     }
 
     public void deleteWishlist(long id) {
@@ -57,48 +72,26 @@ public class WishlistRepository {
                 wishlist.getId());
     }
 
-    private Wishlist getSingleWishlist(String sql, Object param) {
-        Wishlist wishlist = jdbcTemplate.queryForObject(sql, wishlistRowMapper, param);
-        if(wishlist != null) {
-            wishlist.setProducts(getProductsForWishlist(wishlist.getId()));
-        }
-        return wishlist;
-    }
-
-    public Wishlist getWishlistById(Long id) {
-        return getSingleWishlist("SELECT * FROM wishlist WHERE id = ?", id);
-    }
-
-    public List<Product> getProductsForWishlist(Long wishlistId) {
-        String sql = "SELECT p.id, p.name, p.price FROM product p JOIN wishlist_item wi ON p.id = wi.product_id WHERE wi.wishlist_id = ?";
-        return jdbcTemplate.query(sql, (rs, rowNum) ->
-            new Product(
+    public Wishlist getWishlistWithItems(Long id) {
+        Wishlist wishlist = getWishlistById(id);
+        String sql = "SELECT wi.quantity, p.id, p.name, p.price FROM wishlist_item wi JOIN product p ON wi.product_id = p.id WHERE wi.wishlist_id = ? ";
+        List<Product> items = jdbcTemplate.query(sql, (rs, rowNum) -> {
+            return new Product(
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getFloat("price")
-            ), wishlistId);
-
+            );
+        }, id);
+        wishlist.setProducts(items);
+        return wishlist;
     }
 
-    public void addProductToWishlist(Long wishlistId, Long productId) {
-        String checkSql = "SELECT COUNT(*) FROM wishlist_item WHERE wishlist_id = ? AND product_id = ?";
-        Integer count = jdbcTemplate.queryForObject(checkSql, Integer.class, wishlistId, productId);
-        if (count != null && count > 0) {
-            return;
-        }
-        String sql = "INSERT INTO wishlist_item (wishlist_id, product_id) VALUES (?, ?)";
-        jdbcTemplate.update(sql, wishlistId, productId);
+    public void addProductToWishlist(Long wishlistId, Long productId, int quantity) {
+        String sql = """
+            INSERT INTO wishlist_item (wishlist_id, product_id, quantity)
+            VALUES (?, ?, ?)
+            ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)
+        """;
+        jdbcTemplate.update(sql, wishlistId, productId, quantity);
     }
-
-    public void removeProductFromWishlist(Long wishlistId, Long productId) {
-        String sql = "DELETE FROM wishlist_item WHERE wishlist_id = ? AND product_id = ?";
-        jdbcTemplate.update(sql, wishlistId, productId);
-    }
-
 }
-
-
-
-
-
-

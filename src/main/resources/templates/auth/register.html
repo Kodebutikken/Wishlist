@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+</head>
+<body>
+
+<main>
+    <form th:action="@{/profile/register}" th:object="${profile}" method="post">
+        <div class="form-container">
+            <h1>Registrer</h1>
+            <p th:if="${error}" th:text="${error}" style="color:red;"></p>
+            <div>
+                <label for="username">Brugernavn:</label>
+                <input type="text" id="username" th:field="*{userName}" required>
+            </div>
+
+            <div>
+                <label for="email">Email:</label>
+                <input type="email" id="email" th:field="*{email}" required>
+            </div>
+
+            <div>
+                <label for="password">Adgangskode:</label>
+                <input type="password" id="password" th:field="*{password}" required>
+            </div>
+
+            <button type="submit">Opret bruger</button>
+        </div>
+    </form>
+</main>
+
+
+</body>
+</html>
