@@ -30,12 +30,27 @@ public class WishlistRepository {
         return wishlist;
     };
 
+    public List<Wishlist> getWishlistsByUserId(long userId) {
+        String sql = "SELECT * FROM wishlist WHERE user_id = ?";
+        return jdbcTemplate.query(sql, wishlistRowMapper, userId);
+    }
+
     private Wishlist getSingleWishlist(String sql, Object param) {
         return jdbcTemplate.queryForObject(sql, wishlistRowMapper, param);
     }
 
     public Wishlist getWishlistById(long id) {
         return getSingleWishlist("SELECT * FROM wishlist WHERE id = ?", id);
+    }
+
+    public void removeProductFromWishlist(Long wishlistId, Long productId) {
+        String sql = "DELETE FROM wishlist_item WHERE wishlist_id = ? AND product_id = ?";
+        jdbcTemplate.update(sql, wishlistId, productId);
+    }
+
+    public void updateQuantityInWishlist(Long wishlistId, Long productId, int quantity) {
+        String sql = "UPDATE wishlist_item SET quantity = ? WHERE wishlist_id = ? AND product_id = ?";
+        jdbcTemplate.update(sql, quantity, wishlistId, productId);
     }
 
     public void createWishlist(Wishlist wishlist, Long userId) {
