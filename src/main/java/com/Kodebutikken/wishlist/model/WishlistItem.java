@@ -1,0 +1,27 @@
+package com.Kodebutikken.wishlist.model;
+
+public class WishlistItem {
+    private Product product;
+    private int quantity;
+
+    public WishlistItem(Product product, int quantity) {
+        this.product = product;
+        this.quantity = quantity;
+    }
+
+    public WishlistItem() {}
+
+    public Product getProduct() {
+        return product;
+    }
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+}

@@ -1,6 +1,5 @@
 package com.Kodebutikken.wishlist.model;
 
-import java.beans.Visibility;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -9,7 +8,7 @@ public class Wishlist {
     private LocalDate dueDate;
     private Visibility visibility;
     private Profile profile;
-    private List<Product> products;
+    private List<WishlistItem> items;
 
     public Wishlist(long id, LocalDate dueDate, Visibility visibility, Profile profile) {
         this.id = id;
