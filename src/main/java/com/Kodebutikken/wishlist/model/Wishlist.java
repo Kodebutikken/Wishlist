@@ -40,10 +40,10 @@ public class Wishlist {
         this.visibility = visibility;
     }
 
-    public Profile getUser() {
+    public Profile getProfile() {
         return profile;
     }
-    public void setUser(Profile profile) {
+    public void setProfile(Profile profile) {
         this.profile = profile;
     }
 
