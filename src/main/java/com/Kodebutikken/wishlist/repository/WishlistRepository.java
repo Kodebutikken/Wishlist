@@ -88,7 +88,7 @@ public class WishlistRepository {
         wishlist.setItems(items);
         return wishlist;
     }
-
+    .
     public void addProductToWishlist(Long wishlistId, Long productId, int quantity) {
         String checkSql = "SELECT COUNT(*) FROM wishlist_item WHERE wishlist_id = ? AND product_id = ?";
         Integer count = jdbcTemplate.queryForObject(checkSql, Integer.class, wishlistId, productId);
