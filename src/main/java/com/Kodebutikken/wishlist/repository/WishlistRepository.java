@@ -12,9 +12,7 @@ import java.util.List;
 
 @Repository
 public class WishlistRepository {
-
     private final JdbcTemplate jdbcTemplate;
-
     public WishlistRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -32,22 +30,10 @@ public class WishlistRepository {
         return wishlist;
     };
 
-    public List<Wishlist> getWishlistsByProfileId(long profile_id) {
+    public List<Wishlist> getWishlistsByProfileId(Long profile_id) {
         String sql = "SELECT * FROM wishlist WHERE profile_id = ?";
         return jdbcTemplate.query(sql, wishlistRowMapper, profile_id);
     }
-
-
-    public Wishlist getWishlistById(long id) {
-        String sql = "SELECT * FROM wishlist WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, wishlistRowMapper, id);
-    }
-
-    public void removeProductFromWishlist(Long wishlistId, Long productId) {
-        String sql = "DELETE FROM wishlist_item WHERE wishlist_id = ? AND product_id = ?";
-        jdbcTemplate.update(sql, wishlistId, productId);
-    }
-
 
     public void createWishlist(Wishlist wishlist, Long profile_id) {
         String sql = "INSERT INTO wishlist (due_date, visibility, profile_id) VALUES (?, ?, ?)";
@@ -72,34 +58,41 @@ public class WishlistRepository {
     }
 
     private Wishlist getSingleWishlist(String sql, Object param) {
-        return jdbcTemplate.queryForObject(sql, wishlistRowMapper, param);
-    }
-
-    public void addProductToWishlist(Long wishlistId, Long productId, int quantity) {
-        String checkSql = "SELECT COUNT(*) FROM wishlist_item WHERE wishlist_id = ? AND product_id = ?";
-        Integer count = jdbcTemplate.queryForObject(checkSql, Integer.class, wishlistId, productId);
-        if (count != null && count > 0) {
-            String updateSql = "UPDATE wishlist_item SET quantity = quantity + ? WHERE wishlist_id = ? AND product_id = ?";
-            jdbcTemplate.update(updateSql, quantity, wishlistId, productId);
-        } else {
-            String insertSql = "INSERT INTO wishlist_item (wishlist_id, product_id, quantity) VALUES (?, ?, ?)";
-            jdbcTemplate.update(insertSql, wishlistId, productId, quantity);
+        Wishlist wishlist = jdbcTemplate.queryForObject(sql, wishlistRowMapper, param);
+        if(wishlist != null) {
+            wishlist.setProducts(getProductsForWishlist(wishlist.getId()));
         }
+        return wishlist;
     }
 
+    public Wishlist getWishlistById(Long id) {
+        return getSingleWishlist("SELECT * FROM wishlist WHERE id = ?", id);
+    }
 
-    public Wishlist getWishlistWithItems(Long id) {
-        Wishlist wishlist = getWishlistById(id);
-        String sql = "SELECT wi.quantity, p.id, p.name, p.price FROM wishlist_item wi JOIN product p ON wi.product_id = p.id WHERE wi.wishlist_id = ? ";
-        List<Product> items = jdbcTemplate.query(sql, (rs, rowNum) -> {
-            return new Product(
+    public List<Product> getProductsForWishlist(Long wishlistId) {
+        String sql = "SELECT p.id, p.name, p.price FROM product p JOIN wishlist_item wi ON p.id = wi.product_id WHERE wi.wishlist_id = ?";
+        return jdbcTemplate.query(sql, (rs, rowNum) ->
+            new Product(
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getFloat("price")
-            );
-        }, id);
-        wishlist.setProduct(items);
-        return wishlist;
+            ), wishlistId);
+
+    }
+
+    public void addProductToWishlist(Long wishlistId, Long productId) {
+        String checkSql = "SELECT COUNT(*) FROM wishlist_item WHERE wishlist_id = ? AND product_id = ?";
+        Integer count = jdbcTemplate.queryForObject(checkSql, Integer.class, wishlistId, productId);
+        if (count != null && count > 0) {
+            return;
+        }
+        String sql = "INSERT INTO wishlist_item (wishlist_id, product_id) VALUES (?, ?)";
+        jdbcTemplate.update(sql, wishlistId, productId);
+    }
+
+    public void removeProductFromWishlist(Long wishlistId, Long productId) {
+        String sql = "DELETE FROM wishlist_item WHERE wishlist_id = ? AND product_id = ?";
+        jdbcTemplate.update(sql, wishlistId, productId);
     }
 
 }

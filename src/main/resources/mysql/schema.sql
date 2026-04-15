@@ -7,22 +7,22 @@ DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS profile;
 
 CREATE TABLE profile (
-                       id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                       username VARCHAR(255) NOT NULL,
-                       email VARCHAR(255) NOT NULL,
-                       password VARCHAR(255) NOT NULL
+                         id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                         username VARCHAR(255) NOT NULL UNIQUE,
+                         email VARCHAR(255) NOT NULL UNIQUE,
+                         password VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE product (
-                         id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                         id BIGINT AUTO_INCREMENT PRIMARY KEY,
                          name VARCHAR(255) NOT NULL,
                          price FLOAT NOT NULL
 );
 
 CREATE TABLE wishlist (
-                          id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                          id BIGINT AUTO_INCREMENT PRIMARY KEY,
                           due_date DATE,
-                          visibility VARCHAR(20),
+                          visibility VARCHAR(20) NOT NULL,
                           profile_id BIGINT NOT NULL,
                           FOREIGN KEY (profile_id) REFERENCES profile(id)
 );
@@ -30,9 +30,7 @@ CREATE TABLE wishlist (
 CREATE TABLE wishlist_item (
                                wishlist_id BIGINT,
                                product_id BIGINT,
-                               quantity INT,
                                PRIMARY KEY (wishlist_id, product_id),
                                FOREIGN KEY (wishlist_id) REFERENCES wishlist(id),
                                FOREIGN KEY (product_id) REFERENCES product(id)
 );
-
