@@ -1,9 +1,9 @@
 ```mermaid
 erDiagram
-    USERS ||--o{ WISHLIST : has
+    PROFILES ||--o{ WISHLIST : has
     WISHLIST ||--|{ WISHLIST_ITEM : contains
     PRODUCT ||--o{ WISHLIST_ITEM : includes
-    USERS {
+    PROFILES {
         BIGINT id PK
         string username
         string email

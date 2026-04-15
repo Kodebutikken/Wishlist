@@ -7,14 +7,14 @@ public class Wishlist {
     private long id;
     private LocalDate dueDate;
     private Visibility visibility;
-    private User user;
+    private Profile profile;
     private List<WishlistItem> items;
 
-    public Wishlist(long id, LocalDate dueDate, Visibility visibility, User user) {
+    public Wishlist(long id, LocalDate dueDate, Visibility visibility, Profile profile) {
         this.id = id;
         this.dueDate = dueDate;
         this.visibility = visibility;
-        this.user = user;
+        this.profile = profile;
     }
 
     public Wishlist() {}
@@ -40,11 +40,11 @@ public class Wishlist {
         this.visibility = visibility;
     }
 
-    public User  getUser() {
-        return user;
+    public Profile getProfile() {
+        return profile;
     }
-    public void setUser(User user) {
-        this.user = user;
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 
     public List<WishlistItem> getItems() {

@@ -1,22 +1,15 @@
 package com.Kodebutikken.wishlist.model;
 
 public class WishlistItem {
-    private Wishlist wishlist;
     private Product product;
     private int quantity;
 
-    public WishlistItem(Wishlist wishlist, Product product, int quantity) {
-        this.wishlist = wishlist;
+    public WishlistItem(Product product, int quantity) {
         this.product = product;
         this.quantity = quantity;
     }
 
-    public Wishlist getWishlist() {
-        return wishlist;
-    }
-    public void setWishlist(Wishlist wishlist) {
-        this.wishlist = wishlist;
-    }
+    public WishlistItem() {}
 
     public Product getProduct() {
         return product;
