@@ -5,10 +5,6 @@ public class Product {
     private String name;
     private float price;
 
-    public Product(String name, float price) {
-        this.name = name;
-        this.price = price;
-    }
 
     public Product(long id, String name, float price) {
         this.id = id;
