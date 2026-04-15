@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Fejl</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<main>
+    <div class="error-container">
+        <h1>Ups! Noget gik galt.</h1>
+        <p>Der opstod en fejl, og vi kunne ikke behandle din anmodning.</p>
+        <div>
+            <p><strong>Status:</strong> <span th:text="${status}" style="color: red">500</span></p>
+            <p><strong>Fejl:</strong> <span th:text="${error}">Intern serverfejl</span></p>
+            <p><strong>Besked:</strong> <span th:text="${message}">Uventet fejl</span></p>
+        </div>
+        <a th:href="@{/}" class="cta-button">Tilbage til forsiden</a>
+    </div>
+</main>
+
+</body>
+</html>

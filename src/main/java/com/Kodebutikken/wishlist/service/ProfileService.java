@@ -18,8 +18,7 @@ public class ProfileService {
     }
 
     public boolean login(String username, String password) {
-        profileRepository.verifyLogin(username, password);
-        return false; // Placeholder return value
+        return profileRepository.verifyLogin(username, password);
     }
 
 
