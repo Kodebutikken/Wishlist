@@ -1,7 +1,9 @@
 package com.Kodebutikken.wishlist.repository;
 
+import com.Kodebutikken.wishlist.model.Product;
 import com.Kodebutikken.wishlist.model.Visibility;
 import com.Kodebutikken.wishlist.model.Wishlist;
+import com.Kodebutikken.wishlist.model.WishlistItem;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -20,7 +22,9 @@ public class WishlistRepository {
     private final RowMapper<Wishlist> wishlistRowMapper = (rs, rowNum) -> {
         Wishlist wishlist = new Wishlist();
         wishlist.setId(rs.getLong("id"));
-        //VED IKKE HVORDAN JEG GØR MED DATO
+        if (rs.getDate("due_date") != null) {
+            wishlist.setDueDate(rs.getDate("due_date").toLocalDate());
+        }
         wishlist.setVisibility(Visibility.valueOf(rs.getString("visibility"))
         );
         return wishlist;
@@ -53,6 +57,33 @@ public class WishlistRepository {
                 wishlist.getDueDate(),
                 wishlist.getVisibility().name(),
                 wishlist.getId());
+    }
+
+    public Wishlist getWishlistWithItems(Long id) {
+        Wishlist wishlist = getWishlistById(id);
+        String sql = "SELECT wi.quantity, p.id, p.name, p.price FROM wishlist_item wi JOIN product p ON wi.product_id = p.id WHERE wi.wishlist_id = ? ";
+        List<WishlistItem> items = jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Product product = new Product(
+                    rs.getLong("id"),
+                    rs.getString("name"),
+                    rs.getFloat("price")
+            );
+            return new WishlistItem(product, rs.getInt("quantity"));
+        }, id);
+        wishlist.setItems(items);
+        return wishlist;
+    }
+
+    public void addProductToWishlist(Long wishlistId, Long productId, int quantity) {
+        String checkSql = "SELECT COUNT(*) FROM wishlist_item WHERE wishlist_id = ? AND product_id = ?";
+        Integer count = jdbcTemplate.queryForObject(checkSql, Integer.class, wishlistId, productId);
+        if (count != null && count > 0) {
+            String updateSql = "UPDATE wishlist_item SET quantity = quantity + ? WHERE wishlist_id = ? AND product_id = ?";
+            jdbcTemplate.update(updateSql, quantity, wishlistId, productId);
+        } else {
+            String insertSql = "INSERT INTO wishlist_item (wishlist_id, product_id, quantity) VALUES (?, ?, ?)";
+            jdbcTemplate.update(insertSql, wishlistId, productId, quantity);
+        }
     }
 
 }
