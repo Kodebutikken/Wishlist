@@ -47,11 +47,11 @@ public class Wishlist {
         this.profile = profile;
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public List<WishlistItem> getItems() {
+        return items;
     }
-    public void setItems(List<Product> products) {
-        this.products = products;
+    public void setItems(List<WishlistItem> items) {
+        this.items = items;
     }
 
 }
