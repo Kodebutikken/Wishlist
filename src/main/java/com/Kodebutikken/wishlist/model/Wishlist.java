@@ -8,7 +8,7 @@ public class Wishlist {
     private LocalDate dueDate;
     private Visibility visibility;
     private Profile profile;
-    private List<WishlistItem> items;
+    private List<Product> products;
 
     public Wishlist(long id, LocalDate dueDate, Visibility visibility, Profile profile) {
         this.id = id;
@@ -50,7 +50,7 @@ public class Wishlist {
     public List<Product> getProducts() {
         return products;
     }
-    public void setItems(List<Product> products) {
+    public void setProduct(List<Product> products) {
         this.products = products;
     }
 

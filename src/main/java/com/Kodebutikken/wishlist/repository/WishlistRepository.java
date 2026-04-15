@@ -1,9 +1,9 @@
 package com.Kodebutikken.wishlist.repository;
 
 import com.Kodebutikken.wishlist.model.Product;
+import com.Kodebutikken.wishlist.model.Profile;
 import com.Kodebutikken.wishlist.model.Visibility;
 import com.Kodebutikken.wishlist.model.Wishlist;
-import com.Kodebutikken.wishlist.model.WishlistItem;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -25,8 +25,10 @@ public class WishlistRepository {
         if (rs.getDate("due_date") != null) {
             wishlist.setDueDate(rs.getDate("due_date").toLocalDate());
         }
-        wishlist.setVisibility(Visibility.valueOf(rs.getString("visibility"))
-        );
+        wishlist.setVisibility(Visibility.valueOf(rs.getString("visibility")));
+        Profile profile = new Profile();
+        profile.setId(rs.getLong("profile_id"));
+        wishlist.setProfile(profile);
         return wishlist;
     };
 
@@ -35,12 +37,10 @@ public class WishlistRepository {
         return jdbcTemplate.query(sql, wishlistRowMapper, profile_id);
     }
 
-    private Wishlist getSingleWishlist(String sql, Object param) {
-        return jdbcTemplate.queryForObject(sql, wishlistRowMapper, param);
-    }
 
     public Wishlist getWishlistById(long id) {
-        return getSingleWishlist("SELECT * FROM wishlist WHERE id = ?", id);
+        String sql = "SELECT * FROM wishlist WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, wishlistRowMapper, id);
     }
 
     public void removeProductFromWishlist(Long wishlistId, Long productId) {
@@ -48,10 +48,6 @@ public class WishlistRepository {
         jdbcTemplate.update(sql, wishlistId, productId);
     }
 
-    public void updateQuantityInWishlist(Long wishlistId, Long productId, int quantity) {
-        String sql = "UPDATE wishlist_item SET quantity = ? WHERE wishlist_id = ? AND product_id = ?";
-        jdbcTemplate.update(sql, quantity, wishlistId, productId);
-    }
 
     public void createWishlist(Wishlist wishlist, Long profile_id) {
         String sql = "INSERT INTO wishlist (due_date, visibility, profile_id) VALUES (?, ?, ?)";
@@ -59,6 +55,7 @@ public class WishlistRepository {
                 wishlist.getDueDate(),
                 wishlist.getVisibility().name(),
                 profile_id);
+        jdbcTemplate.update(sql, wishlist.getDueDate(), wishlist.getVisibility().name(), profile_id);
     }
 
     public void deleteWishlist(long id) {
@@ -74,21 +71,10 @@ public class WishlistRepository {
                 wishlist.getId());
     }
 
-    public Wishlist getWishlistWithItems(Long id) {
-        Wishlist wishlist = getWishlistById(id);
-        String sql = "SELECT wi.quantity, p.id, p.name, p.price FROM wishlist_item wi JOIN product p ON wi.product_id = p.id WHERE wi.wishlist_id = ? ";
-        List<WishlistItem> items = jdbcTemplate.query(sql, (rs, rowNum) -> {
-            Product product = new Product(
-                    rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getFloat("price")
-            );
-            return new WishlistItem(product, rs.getInt("quantity"));
-        }, id);
-        wishlist.setItems(items);
-        return wishlist;
+    private Wishlist getSingleWishlist(String sql, Object param) {
+        return jdbcTemplate.queryForObject(sql, wishlistRowMapper, param);
     }
-    .
+
     public void addProductToWishlist(Long wishlistId, Long productId, int quantity) {
         String checkSql = "SELECT COUNT(*) FROM wishlist_item WHERE wishlist_id = ? AND product_id = ?";
         Integer count = jdbcTemplate.queryForObject(checkSql, Integer.class, wishlistId, productId);
@@ -101,4 +87,25 @@ public class WishlistRepository {
         }
     }
 
+
+    public Wishlist getWishlistWithItems(Long id) {
+        Wishlist wishlist = getWishlistById(id);
+        String sql = "SELECT wi.quantity, p.id, p.name, p.price FROM wishlist_item wi JOIN product p ON wi.product_id = p.id WHERE wi.wishlist_id = ? ";
+        List<Product> items = jdbcTemplate.query(sql, (rs, rowNum) -> {
+            return new Product(
+                    rs.getLong("id"),
+                    rs.getString("name"),
+                    rs.getFloat("price")
+            );
+        }, id);
+        wishlist.setProduct(items);
+        return wishlist;
+    }
+
 }
+
+
+
+
+
+
