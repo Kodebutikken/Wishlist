@@ -80,6 +80,6 @@ public class WishlistController {
             return "redirect:/profile/login";
         }
         wishlistService.removeProductFromWishlist(wishlistId, productId);
-        return "redirect:/wishlist/" + wishlistId; 
+        return "redirect:/wishlist/" + wishlistId;
     }
 }
