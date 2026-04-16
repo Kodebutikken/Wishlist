@@ -25,7 +25,11 @@ public class ProfileService {
         return profileRepository.getProfileByUsername(username);
     }
 
-    public void updateProfile(Profile profile, String currentUsername) {
-        profileRepository.updateProfile(profile, currentUsername);
+    public Profile getProfileById(Long id) {
+        return profileRepository.getProfileById(id);
+    }
+
+    public void updateProfile(Profile profile, Long profileId) {
+        profileRepository.updateProfile(profile, profileId);
     }
 }

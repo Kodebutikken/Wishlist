@@ -2,6 +2,7 @@ package com.Kodebutikken.wishlist.repository;
 
 import com.Kodebutikken.wishlist.model.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -10,6 +11,15 @@ public class ProfileRepository {
     public ProfileRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+
+    private final RowMapper<Profile> profileQueryMapper = (rs, rowNum) -> {
+        Profile profile = new Profile();
+        profile.setId(rs.getLong("id"));
+        profile.setUserName(rs.getString("username"));
+        profile.setEmail(rs.getString("email"));
+        profile.setPassword(rs.getString("password"));
+        return profile;
+    };
 
     public void createProfile(Profile profile) {
         String sql = "INSERT INTO profile (username, email, password) VALUES (?, ?, ?)";
@@ -24,18 +34,16 @@ public class ProfileRepository {
 
     public Profile getProfileByUsername(String username) {
         String sql = "SELECT * FROM profile WHERE username = ?";
-        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
-            Profile profile = new Profile();
-            profile.setId(rs.getLong("id"));
-            profile.setUserName(rs.getString("username"));
-            profile.setEmail(rs.getString("email"));
-            profile.setPassword(rs.getString("password"));
-            return profile;
-        }, username);
+        return jdbcTemplate.queryForObject(sql, profileQueryMapper, username);
     }
 
-    public void updateProfile(Profile profile, String currentUsername) {
-        String sql = "UPDATE profile SET email = ?, password = ?, username = ? WHERE username = ?";
-        jdbcTemplate.update(sql, profile.getEmail(), profile.getPassword(), profile.getUserName(), currentUsername);
+    public Profile getProfileById(Long id) {
+        String sql = "SELECT * FROM profile WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, profileQueryMapper, id);
+    }
+
+    public void updateProfile(Profile profile, Long profileId) {
+        String sql = "UPDATE profile SET email = ?, password = ?, username = ? WHERE id = ?";
+        jdbcTemplate.update(sql, profile.getEmail(), profile.getPassword(), profile.getUserName(), profileId);
     }
 }

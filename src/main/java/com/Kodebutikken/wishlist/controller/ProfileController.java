@@ -33,7 +33,7 @@ public class ProfileController {
     @GetMapping("/register")
     public String showRegister(HttpSession session, Model model) {
         if(session.getAttribute("user") != null) {
-            return "redirect:/profile/wishlists"; // Redirect to wishlists if already logged in
+            return "redirect:/wishlist/wishlists"; // Redirect to wishlists if already logged in
         }
         Profile profile = new Profile();
         model.addAttribute("profile", profile);
@@ -48,8 +48,8 @@ public class ProfileController {
         if (session.getAttribute("user") == null) {
             return "redirect:/profile/login";
         }
-        String currentUsername = (String) session.getAttribute("user");
-        Profile profile = profileService.getProfileByUsername(currentUsername);
+        Long profileId = (Long) session.getAttribute("user");
+        Profile profile = profileService.getProfileById(profileId);
         model.addAttribute("profile", profile);
         return "profile/update";
     }
@@ -63,12 +63,13 @@ public class ProfileController {
     ) {
 
         boolean isAuthenticated = profileService.login(username, password);
+        Long profileId = profileService.getProfileByUsername(username).getId();
 
         if (!isAuthenticated) {
             model.addAttribute("error", "Forkert brugernavn eller adgangskode.");
             return "auth/login";
         } else {
-            session.setAttribute("user", username);
+            session.setAttribute("user", profileId);
             return "redirect:/wishlist/wishlists";
         }
     }
@@ -94,8 +95,8 @@ public class ProfileController {
             }
         }
 
-        profileService.updateProfile(profile, (String) session.getAttribute("user"));
-        session.setAttribute("user", profile.getUserName());
-        return "redirect:/profile/wishlists";
+        profileService.updateProfile(profile, (Long) session.getAttribute("user"));
+        session.setAttribute("user", session.getAttribute("user"));
+        return "redirect:/wishlist/wishlists";
     }
 }
