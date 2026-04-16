@@ -19,16 +19,6 @@ public class WishlistController {
         this.wishlistService = wishlistService;
     }
 
-    @GetMapping
-    public String getWishlists(HttpSession session, Model model) {
-        Long profileId = (Long) session.getAttribute("profileId");
-        if (profileId == null) {
-            return "redirect:/profile/login"; // Redirect to login if not authenticated
-        }
-        model.addAttribute("wishlists", wishlistService.getWishlistByProfileId(profileId));
-        return "profile/wishlists"; // Return the view name for displaying wishlists
-    }
-
     @PostMapping("/create")
     public String createWishlist(@ModelAttribute Wishlist wishlist, HttpSession session) {
         Long profileId = (Long) session.getAttribute("profileId");
@@ -66,6 +56,6 @@ public class WishlistController {
             return "redirect:/profile/login"; // Redirect to login if not authenticated
         }
         wishlistService.updateWishlist(wishlist);
-        return "redirect:/wishlist"; // Redirect to the wishlist page after updating
+        return "redirect:/wishlist"; // Redirect to the wishlist page after updating    
     }
 }
