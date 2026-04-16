@@ -16,16 +16,10 @@ public class ProfileController {
         this.profileService = profileService;
     }
 
-    @GetMapping("/wishlists")
-    public String viewWishlists() {
-        // Logic to retrieve and display the user's wishlists
-        return "profile/wishlists"; // Return the view name for displaying wishlists
-    }
-
     @GetMapping("/login")
     public String showLogin(HttpSession session) {
         if(session.getAttribute("user") != null) {
-            return "redirect:/profile/wishlists"; // Redirect to wishlists if already logged in
+            return "redirect:/wishlist/wishlists"; // Redirect to wishlists if already logged in
         }
         return "auth/login"; // Return the view name for the login page
     }
@@ -64,7 +58,7 @@ public class ProfileController {
             return "auth/login";
         } else {
             session.setAttribute("user", username);
-            return "redirect:/profile/wishlists";
+            return "redirect:/wishlist/wishlists";
         }
     }
 

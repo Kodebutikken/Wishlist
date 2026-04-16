@@ -9,7 +9,7 @@ public class IndexController {
     @GetMapping("/")
     public String showIndex(HttpSession session) {
         if (session.getAttribute("user") != null) {
-            return "redirect:/profile/wishlists";
+            return "redirect:/wishlist/wishlists";
         }
         return "index";
     }

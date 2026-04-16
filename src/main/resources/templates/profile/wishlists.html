@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="da">
 <head>
-  <meta charset="UTF-8">
-  <title>Dine ønskelister</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" th:href="@{/styles.css}">
-  <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+    <meta charset="UTF-8">
+    <title>Dine ønskelister</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 </head>
 <body>
-<h1>Dine ønskelister</h1>
+<main class="container">
+    <h1>Dine ønskelister</h1>
 
+    <div class="wishlist-list">
+        <div th:each="wishlist : ${wishlists}" class="wishlist-item">
+            <h2 th:text="${wishlist.name}">Ønskeliste Navn</h2>
+            <p th:text="'Antal gaver: ' + ${wishlist.gifts.size()}">Antal gaver: 0</p>
+            <a th:href="@{/profile/wishlists/{id}(id=${wishlist.id})}" class="btn">Se detaljer</a>
+        </div>
+    </div>
+</main>
 </body>
 </html>
