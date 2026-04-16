@@ -15,7 +15,7 @@ public class WishlistService {
         this.wishlistRepository = wishlistRepository;
     }
 
-    public List<Wishlist> getWishlistByProfileId(Long profileId) {
+    public List<Wishlist> getWishlistsByProfileId(Long profileId) {
         return wishlistRepository.getWishlistsByProfileId(profileId);
     }
 

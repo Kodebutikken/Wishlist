@@ -19,6 +19,7 @@ public class WishlistRepository {
     private final RowMapper<Wishlist> wishlistRowMapper = (rs, rowNum) -> {
         Wishlist wishlist = new Wishlist();
         wishlist.setId(rs.getLong("id"));
+        wishlist.setName(rs.getString("name"));
         if (rs.getDate("due_date") != null) {
             wishlist.setDueDate(rs.getDate("due_date").toLocalDate());
         }
@@ -52,8 +53,9 @@ public class WishlistRepository {
     }
 
     public void createWishlist(Wishlist wishlist, Long profile_id) {
-        String sql = "INSERT INTO wishlist (due_date, visibility, profile_id) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO wishlist (name, due_date, visibility, profile_id) VALUES (?, ?, ?, ?)";
         jdbcTemplate.update(sql,
+                wishlist.getName(),
                 wishlist.getDueDate(),
                 wishlist.getVisibility().name(),
                 profile_id);

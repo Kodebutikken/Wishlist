@@ -21,6 +21,7 @@ CREATE TABLE product (
 
 CREATE TABLE wishlist (
                           id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                          name VARCHAR(255) NOT NULL,
                           due_date DATE,
                           visibility VARCHAR(20) NOT NULL,
                           profile_id BIGINT NOT NULL,
