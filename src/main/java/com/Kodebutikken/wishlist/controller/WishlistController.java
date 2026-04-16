@@ -58,4 +58,28 @@ public class WishlistController {
         wishlistService.updateWishlist(wishlist);
         return "redirect:/wishlist"; // Redirect to the wishlist page after updating    
     }
+    @PostMapping("/{wishlistId}/wish/add")
+    public String addProductToWishlist(@PathVariable Long wishlistId,
+                                       @RequestParam Long productId,
+                                       @RequestParam int quantity,
+                                       HttpSession session) {
+        Long profileId = (Long) session.getAttribute("profileId");
+        if (profileId == null) {
+            return "redirect:/profile/login";
+        }
+        wishlistService.addProductToWishlist(wishlistId, productId, quantity);
+        return "redirect:/wishlist/" + wishlistId;
+    }
+
+    @GetMapping("/{wishlistId}/wish/remove/{productId}")
+    public String removeProductFromWishlist(@PathVariable Long wishlistId,
+                                            @PathVariable Long productId,
+                                            HttpSession session) {
+        Long profileId = (Long) session.getAttribute("profileId");
+        if (profileId == null) {
+            return "redirect:/profile/login";
+        }
+        wishlistService.removeProductFromWishlist(wishlistId, productId);
+        return "redirect:/wishlist/" + wishlistId;
+    }
 }
