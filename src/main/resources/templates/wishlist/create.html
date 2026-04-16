@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Dine ønskelister</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+</head>
+<body>
+<main class="form-container">
+    <h1>Opret ny ønskeliste</h1>
+
+    <form th:action="@{/wishlist/create}" th:object="${wishlist}" method="post" class="wishlist-form">
+
+        <input type="hidden" th:field="*{id}"/>
+
+        <div class="form-group">
+            <label for="name">Navn på ønskeliste:</label>
+            <input type="text" id="name" th:field="*{name}" required>
+        </div>
+        <div class="form-group">
+            <label for="eventDate">Dato for begivenhed:</label>
+            <input type="date" id="eventDate" th:field="*{dueDate}" required>
+        </div>
+        <div class="form-group">
+            <label for="visibility">Synlighed:</label>
+            <select id="visibility" th:field="*{visibility}" required>
+                <option th:each="visibilityOptions : ${visibilityOptions}"
+                        th:value="${visibilityOptions}"
+                        th:text="${visibilityOptions.name()}">
+                </option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn">Opret ønskeliste</button>
+    </form>
+</main>
+
+</body>
+</html>

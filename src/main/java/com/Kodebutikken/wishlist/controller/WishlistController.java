@@ -1,11 +1,14 @@
 package com.Kodebutikken.wishlist.controller;
 
+import com.Kodebutikken.wishlist.model.Visibility;
 import com.Kodebutikken.wishlist.model.Wishlist;
 import com.Kodebutikken.wishlist.service.WishlistService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/wishlist")
@@ -19,14 +22,40 @@ public class WishlistController {
         this.wishlistService = wishlistService;
     }
 
-    @PostMapping("/create")
-    public String createWishlist(@ModelAttribute Wishlist wishlist, HttpSession session) {
-        Long profileId = (Long) session.getAttribute("profileId");
-        if (profileId == null) {
+    @GetMapping("/wishlists")
+    public String viewWishlists(HttpSession session, Model model) {
+        if (session.getAttribute("user") == null) {
             return "redirect:/profile/login"; // Redirect to login if not authenticated
         }
-        wishlistService.createWishlist(wishlist, profileId);
-        return "redirect:/wishlist"; // Redirect to the wishlist page after creation
+
+
+        List<Wishlist> wishlists = wishlistService.getWishlistByProfileId((Long) session.getAttribute("profileId"));
+        model.addAttribute("wishlists", wishlists);
+
+        return "/profile/wishlists"; // Return the view name for displaying wishlists
+    }
+
+    @GetMapping("/create")
+    public String showCreateWishlistForm(HttpSession session, Model model) {
+        if (session.getAttribute("user") == null) {
+            return "redirect:/profile/login"; // Redirect to login if not authenticated
+        }
+        Wishlist wishlist = new Wishlist();
+        model.addAttribute("wishlist", wishlist);
+        model.addAttribute("visibilityOptions", Visibility.values());
+        model.addAttribute("userId", session.getAttribute("profileId"));
+        return "wishlist/create"; // Return the view name for creating a wishlist
+    }
+
+
+
+    @PostMapping("/create")
+    public String createWishlist(@ModelAttribute Wishlist wishlist, HttpSession session) {
+        if (session.getAttribute("user")== null) {
+            return "redirect:/profile/login"; // Redirect to login if not authenticated
+        }
+        wishlistService.createWishlist(wishlist, (Long) session.getAttribute("profileId"));
+        return "redirect:/wishlist/wishlists"; // Redirect to the wishlist page after creation
     }
 
     @GetMapping("/delete/{id}")
