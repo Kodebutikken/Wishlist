@@ -43,6 +43,17 @@ public class ProfileController {
         return "auth/register"; // Return the view name for the registration page
     }
 
+    @GetMapping("/update")
+    public String showUpdateProfile(HttpSession session, Model model) {
+        if (session.getAttribute("user") == null) {
+            return "redirect:/profile/login";
+        }
+        String currentUsername = (String) session.getAttribute("user");
+        Profile profile = profileService.getProfileByUsername(currentUsername);
+        model.addAttribute("profile", profile);
+        return "profile/update";
+    }
+
     @PostMapping("/login")
     public String handleLogin(
             @RequestParam String username,
@@ -66,5 +77,25 @@ public class ProfileController {
     public String handleRegister(@ModelAttribute Profile profile) {
         profileService.createProfile(profile);
         return "redirect:/profile/login";
+    }
+
+    @PostMapping("/update")
+    public String handleUpdateProfile(
+            @ModelAttribute Profile profile,
+            @RequestParam() String confirmPassword,
+            HttpSession session,
+            Model model) {
+        String password = profile.getPassword();
+        if (password != null && !password.isBlank()) {
+            if (!password.equals(confirmPassword)) {
+                model.addAttribute("profile", profile);
+                model.addAttribute("error", "Adgangskoderne matcher ikke.");
+                return "profile/update";
+            }
+        }
+
+        profileService.updateProfile(profile, (String) session.getAttribute("user"));
+        session.setAttribute("user", profile.getUserName());
+        return "redirect:/profile/wishlists";
     }
 }
