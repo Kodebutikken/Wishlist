@@ -13,7 +13,7 @@
 
     <form th:action="@{/wishlist/create}" th:object="${wishlist}" method="post" class="wishlist-form">
 
-        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{profileId}" th:value="${profileId}"/>
 
         <div class="form-group">
             <label for="name">Navn på ønskeliste:</label>
@@ -32,6 +32,7 @@
                 </option>
             </select>
         </div>
+
 
         <button type="submit" class="btn">Opret ønskeliste</button>
     </form>

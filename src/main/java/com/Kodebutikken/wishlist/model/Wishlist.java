@@ -1,6 +1,7 @@
 package com.Kodebutikken.wishlist.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Wishlist {
@@ -8,15 +9,15 @@ public class Wishlist {
     private String name;
     private LocalDate dueDate;
     private Visibility visibility;
-    private Profile profile;
-    private List<Product> products;
+    private Long profileId;
+    private List<Product> products = new ArrayList<>();
 
-    public Wishlist(long id, String name, LocalDate dueDate, Visibility visibility, Profile profile) {
+    public Wishlist(long id, String name, LocalDate dueDate, Visibility visibility, Long profileId) {
         this.id = id;
         this.name = name;
         this.dueDate = dueDate;
         this.visibility = visibility;
-        this.profile = profile;
+        this.profileId = profileId;
     }
 
     public Wishlist() {}
@@ -54,11 +55,11 @@ public class Wishlist {
         this.visibility = visibility;
     }
 
-    public Profile getProfile() {
-        return profile;
+    public Long getProfileId() {
+        return profileId;
     }
-    public void setProfile(Profile profile) {
-        this.profile = profile;
+    public void setProfileId(Long profileId) {
+        this.profileId = profileId;
     }
 
     public List<Product> getProducts() {

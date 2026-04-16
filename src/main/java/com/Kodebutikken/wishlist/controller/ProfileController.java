@@ -18,7 +18,7 @@ public class ProfileController {
 
     @GetMapping("/login")
     public String showLogin(HttpSession session) {
-        if(session.getAttribute("user") != null) {
+        if(session.getAttribute("profileId") != null) {
             return "redirect:/wishlist/wishlists"; // Redirect to wishlists if already logged in
         }
         return "auth/login"; // Return the view name for the login page
@@ -32,7 +32,7 @@ public class ProfileController {
 
     @GetMapping("/register")
     public String showRegister(HttpSession session, Model model) {
-        if(session.getAttribute("user") != null) {
+        if(session.getAttribute("profileId") != null) {
             return "redirect:/wishlist/wishlists"; // Redirect to wishlists if already logged in
         }
         Profile profile = new Profile();
@@ -45,10 +45,10 @@ public class ProfileController {
 
     @GetMapping("/update")
     public String showUpdateProfile(HttpSession session, Model model) {
-        if (session.getAttribute("user") == null) {
+        if (session.getAttribute("profileId") == null) {
             return "redirect:/profile/login";
         }
-        Long profileId = (Long) session.getAttribute("user");
+        Long profileId = (Long) session.getAttribute("profileId");
         Profile profile = profileService.getProfileById(profileId);
         model.addAttribute("profile", profile);
         return "profile/update";
@@ -69,7 +69,7 @@ public class ProfileController {
             model.addAttribute("error", "Forkert brugernavn eller adgangskode.");
             return "auth/login";
         } else {
-            session.setAttribute("user", profileId);
+            session.setAttribute("profileId", profileId);
             return "redirect:/wishlist/wishlists";
         }
     }
@@ -95,8 +95,8 @@ public class ProfileController {
             }
         }
 
-        profileService.updateProfile(profile, (Long) session.getAttribute("user"));
-        session.setAttribute("user", session.getAttribute("user"));
+        profileService.updateProfile(profile, (Long) session.getAttribute("profileId"));
+        session.setAttribute("profileId", session.getAttribute("profileId"));
         return "redirect:/wishlist/wishlists";
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class IndexController {
     @GetMapping("/")
     public String showIndex(HttpSession session) {
-        if (session.getAttribute("user") != null) {
+        if (session.getAttribute("profileId") != null) {
             return "redirect:/wishlist/wishlists";
         }
         return "index";
