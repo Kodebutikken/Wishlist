@@ -21,5 +21,15 @@ public class ProfileService {
         return profileRepository.verifyLogin(username, password);
     }
 
+    public Profile getProfileByUsername(String username) {
+        return profileRepository.getProfileByUsername(username);
+    }
 
+    public Profile getProfileById(Long id) {
+        return profileRepository.getProfileById(id);
+    }
+
+    public void updateProfile(Profile profile, Long profileId) {
+        profileRepository.updateProfile(profile, profileId);
+    }
 }

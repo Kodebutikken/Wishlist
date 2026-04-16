@@ -33,7 +33,7 @@ public class ProfileController {
     @GetMapping("/register")
     public String showRegister(HttpSession session, Model model) {
         if(session.getAttribute("user") != null) {
-            return "redirect:/profile/wishlists"; // Redirect to wishlists if already logged in
+            return "redirect:/wishlist/wishlists"; // Redirect to wishlists if already logged in
         }
         Profile profile = new Profile();
         model.addAttribute("profile", profile);
@@ -41,6 +41,17 @@ public class ProfileController {
         model.addAttribute("email", profile.getEmail());
         model.addAttribute("password", profile.getPassword());
         return "auth/register"; // Return the view name for the registration page
+    }
+
+    @GetMapping("/update")
+    public String showUpdateProfile(HttpSession session, Model model) {
+        if (session.getAttribute("user") == null) {
+            return "redirect:/profile/login";
+        }
+        Long profileId = (Long) session.getAttribute("user");
+        Profile profile = profileService.getProfileById(profileId);
+        model.addAttribute("profile", profile);
+        return "profile/update";
     }
 
     @PostMapping("/login")
@@ -52,12 +63,13 @@ public class ProfileController {
     ) {
 
         boolean isAuthenticated = profileService.login(username, password);
+        Long profileId = profileService.getProfileByUsername(username).getId();
 
         if (!isAuthenticated) {
             model.addAttribute("error", "Forkert brugernavn eller adgangskode.");
             return "auth/login";
         } else {
-            session.setAttribute("user", username);
+            session.setAttribute("user", profileId);
             return "redirect:/wishlist/wishlists";
         }
     }
@@ -66,5 +78,25 @@ public class ProfileController {
     public String handleRegister(@ModelAttribute Profile profile) {
         profileService.createProfile(profile);
         return "redirect:/profile/login";
+    }
+
+    @PostMapping("/update")
+    public String handleUpdateProfile(
+            @ModelAttribute Profile profile,
+            @RequestParam() String confirmPassword,
+            HttpSession session,
+            Model model) {
+        String password = profile.getPassword();
+        if (password != null && !password.isBlank()) {
+            if (!password.equals(confirmPassword)) {
+                model.addAttribute("profile", profile);
+                model.addAttribute("error", "Adgangskoderne matcher ikke.");
+                return "profile/update";
+            }
+        }
+
+        profileService.updateProfile(profile, (Long) session.getAttribute("user"));
+        session.setAttribute("user", session.getAttribute("user"));
+        return "redirect:/wishlist/wishlists";
     }
 }

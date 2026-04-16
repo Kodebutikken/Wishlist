@@ -42,6 +42,15 @@ body {
     margin-top: 10px;
 }
 
+.form-error-container {
+    color: red;
+    font-size: 0.9em;
+    padding: 0 10px;
+    border: #ff0000 1px solid;
+    border-radius: 5px;
+    background-color: #ffe6e6;
+}
+
 .error-container {
     width: 400px;
     margin: 50px auto;
