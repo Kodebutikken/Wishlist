@@ -25,16 +25,15 @@ public class ProfileRepository {
         String sql = "INSERT INTO profile (username, email, password) VALUES (?, ?, ?)";
         jdbcTemplate.update(sql, profile.getUserName(), profile.getEmail(), profile.getPassword());
     }
-    public boolean verifyLogin(String username, String password) {
-        String sql = "SELECT COUNT(*) FROM profile WHERE (username = ? OR email = ?) AND password = ?";
-        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, username, username, password);
 
-        return count != null && count > 0;
+    public boolean verifyLogin(String username, String password) {
+        String sql = "SELECT 1 FROM profile WHERE (username = ? OR email = ?) AND password = ? LIMIT 1";
+        return !jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt(1), username, username, password).isEmpty();
     }
 
-    public Profile getProfileByUsername(String username) {
-        String sql = "SELECT * FROM profile WHERE username = ?";
-        return jdbcTemplate.queryForObject(sql, profileQueryMapper, username);
+    public Profile getProfileByUsernameOrEmail(String usernameOrEmail) {
+        String sql = "SELECT * FROM profile WHERE username = ? OR email = ?";
+        return jdbcTemplate.queryForObject(sql, profileQueryMapper, usernameOrEmail, usernameOrEmail);
     }
 
     public Profile getProfileById(Long id) {

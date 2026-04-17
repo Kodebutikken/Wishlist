@@ -19,9 +19,9 @@ public class ProfileController {
     @GetMapping("/login")
     public String showLogin(HttpSession session) {
         if(session.getAttribute("profileId") != null) {
-            return "redirect:/wishlist/wishlists"; // Redirect to wishlists if already logged in
+            return "redirect:/wishlist/wishlists";
         }
-        return "auth/login"; // Return the view name for the login page
+        return "auth/login";
     }
 
     @GetMapping("/logout")
@@ -33,14 +33,14 @@ public class ProfileController {
     @GetMapping("/register")
     public String showRegister(HttpSession session, Model model) {
         if(session.getAttribute("profileId") != null) {
-            return "redirect:/wishlist/wishlists"; // Redirect to wishlists if already logged in
+            return "redirect:/wishlist/wishlists";
         }
         Profile profile = new Profile();
         model.addAttribute("profile", profile);
         model.addAttribute("username", profile.getUserName());
         model.addAttribute("email", profile.getEmail());
         model.addAttribute("password", profile.getPassword());
-        return "auth/register"; // Return the view name for the registration page
+        return "auth/register";
     }
 
     @GetMapping("/update")
@@ -61,14 +61,13 @@ public class ProfileController {
             HttpSession session,
             Model model
     ) {
-
         boolean isAuthenticated = profileService.login(username, password);
-        Long profileId = profileService.getProfileByUsername(username).getId();
 
         if (!isAuthenticated) {
             model.addAttribute("error", "Forkert brugernavn eller adgangskode.");
             return "auth/login";
         } else {
+            Long profileId = profileService.getProfileByUsernameOrEmail(username).getId();
             session.setAttribute("profileId", profileId);
             return "redirect:/wishlist/wishlists";
         }
