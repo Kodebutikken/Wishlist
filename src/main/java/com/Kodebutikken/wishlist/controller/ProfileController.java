@@ -69,7 +69,7 @@ public class ProfileController {
         } else {
             Long profileId = profileService.getProfileByUsernameOrEmail(username).getId();
             session.setAttribute("profileId", profileId);
-            return "redirect:/wishlist/wishlists";
+            return "redirect:/wishlists";
         }
     }
 
@@ -96,6 +96,6 @@ public class ProfileController {
 
         profileService.updateProfile(profile, (Long) session.getAttribute("profileId"));
         session.setAttribute("profileId", session.getAttribute("profileId"));
-        return "redirect:/wishlist/wishlists";
+        return "redirect:/wishlists";
     }
 }

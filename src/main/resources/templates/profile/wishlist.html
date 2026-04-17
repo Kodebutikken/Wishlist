@@ -8,6 +8,21 @@
   <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 </head>
 <body>
+    <main class="container">
+        <div>
+            <h1 th:text="${wishlist.name}">Ønskeliste Navn</h1>
+            <p th:text="'Antal gaver: ' + ${wishlist.getProducts().size()}">Antal gaver: 0</p>
+            <div class="gift-list">
+                <div th:if="${!wishlist.getProducts().isEmpty()}" th:each="product : ${wishlist.getProducts()}" class="product-item">
+                    <h2 th:text="${product.name}">Gave Navn</h2>
+                    <p th:text="'Pris: ' + ${product.price} + ' DKK'">Pris: 0 DKK</p>
+                    <p th:text="'Beskrivelse: ' + ${product.description}">Beskrivelse: Ingen beskrivelse</p>
+                    <p th:text="'URL: ' + ${product.url}">URL: Ingen URL</p>
+                </div>
+            </div>
 
+
+        </div>
+    </main>
 </body>
 </html>

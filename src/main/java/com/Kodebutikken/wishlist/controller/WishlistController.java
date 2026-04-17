@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/wishlist")
+@RequestMapping("/wishlists")
 public class WishlistController {
     //TODO: Implement the wishlist controller to handle creating, viewing, and managing wishlists for users.
     // This will include methods for adding items to a wishlist, viewing a specific wishlist,
@@ -22,7 +22,7 @@ public class WishlistController {
         this.wishlistService = wishlistService;
     }
 
-    @GetMapping("/wishlists")
+    @GetMapping()
     public String viewWishlists(HttpSession session, Model model) {
         if (session.getAttribute("profileId") == null) {
             return "redirect:/profile/login";
@@ -33,6 +33,25 @@ public class WishlistController {
 
         return "profile/wishlists";
     }
+
+    @GetMapping("/{id}")
+    public String viewWishlist(@PathVariable Long id, HttpSession session, Model model) {
+        if (session.getAttribute("profileId") == null) {
+            return "redirect:/profile/login";
+        }
+        Wishlist wishlist = wishlistService.getWishlistById(id);
+        if (wishlist == null || !wishlist.getProfileId().equals(session.getAttribute("profileId"))) {
+            return "redirect:/wishlists";
+        }
+        model.addAttribute("wishlist", wishlist);
+        return "/profile/wishlist";
+    }
+
+
+
+
+
+
 
     @GetMapping("/create")
     public String showCreateWishlistForm(HttpSession session, Model model) {
@@ -54,7 +73,7 @@ public class WishlistController {
             return "redirect:/profile/login";
         }
         wishlistService.createWishlist(wishlist, (Long) session.getAttribute("profileId"));
-        return "redirect:/wishlist/wishlists";
+        return "redirect:/wishlists";
     }
 
     @GetMapping("/delete/{id}")
@@ -63,7 +82,7 @@ public class WishlistController {
             return "redirect:/profile/login";
         }
         wishlistService.deleteWishlist(id);
-        return "redirect:/wishlist"; // Redirect to the wishlist page after deletion
+        return "redirect:/wishlists";
     }
 
     @GetMapping("/edit/{id}")
@@ -81,7 +100,7 @@ public class WishlistController {
             return "redirect:/profile/login";
         }
         wishlistService.updateWishlist(wishlist);
-        return "redirect:/wishlist/wishlists";
+        return "redirect:/wishlists";
     }
     @PostMapping("/{wishlistId}/wish/add")
     public String addProductToWishlist(@PathVariable Long wishlistId,

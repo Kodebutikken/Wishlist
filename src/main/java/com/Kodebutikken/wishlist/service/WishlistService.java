@@ -20,7 +20,7 @@ public class WishlistService {
     }
 
     public Wishlist getWishlistById(Long id) {
-        return wishlistRepository.getWishlistById(id);
+        return wishlistRepository.getWishlistWithItems(id);
     }
 
     public void createWishlist(Wishlist wishlist, Long profileId) {

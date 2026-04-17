@@ -15,12 +15,12 @@
         <div th:if="${!wishlists.isEmpty()}" th:each="wishlist : ${wishlists}" class="wishlist-item">
             <h2 th:text="${wishlist.name}">Ønskeliste Navn</h2>
             <p th:text="'Antal gaver: ' + ${wishlist.getProducts().size()}">Antal gaver: 0</p>
-            <a th:href="@{/profile/wishlists/{id}(id=${wishlist.id})}" class="btn">Se detaljer</a>
+            <a th:href="@{/wishlists/{id}(id=${wishlist.id})}" class="btn">Se detaljer</a>
         </div>
     </div>
 
     <div class="button-row-10 justify-center">
-        <a th:href="@{/wishlist/create}">
+        <a th:href="@{/wishlists/create}">
             <button type="button">Opret ny ønskeliste</button>
         </a>
     </div>

@@ -11,9 +11,9 @@
 <main class="form-container">
     <h1>Opret ny ønskeliste</h1>
 
-    <form th:action="@{/wishlist/create}" th:object="${wishlist}" method="post" class="wishlist-form">
+    <form th:action="@{/wishlists/create}" th:object="${wishlist}" method="post" class="wishlist-form">
 
-        <input type="hidden" th:field="*{profileId}" th:value="${profileId}"/>
+        <input type="hidden" id="profileId" th:field="*{profileId}" th:value="${profileId}"/>
 
         <div class="form-group">
             <label for="name">Navn på ønskeliste:</label>

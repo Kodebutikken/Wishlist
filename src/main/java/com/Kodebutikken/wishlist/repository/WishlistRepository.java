@@ -37,11 +37,6 @@ public class WishlistRepository {
         return jdbcTemplate.queryForObject(sql, wishlistRowMapper, param);
     }
 
-    public Wishlist getWishlistById(long id) {
-        String sql = "SELECT * FROM wishlist WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, wishlistRowMapper, id);
-    }
-
     public void removeProductFromWishlist(Long wishlistId, Long productId) {
         String sql = "DELETE FROM wishlist_item WHERE wishlist_id = ? AND product_id = ?";
         jdbcTemplate.update(sql, wishlistId, productId);
@@ -76,12 +71,14 @@ public class WishlistRepository {
 
     public Wishlist getWishlistWithItems(Long id) {
         Wishlist wishlist = getWishlistById(id);
-        String sql = "SELECT wi.quantity, p.id, p.name, p.price FROM wishlist_item wi JOIN product p ON wi.product_id = p.id WHERE wi.wishlist_id = ? ";
+        String sql = "SELECT wi.quantity, p.id, p.name, p.price, p.description, p.product_url FROM wishlist_item wi JOIN product p ON wi.product_id = p.id WHERE wi.wishlist_id = ? ";
         List<Product> items = jdbcTemplate.query(sql, (rs, rowNum) -> {
             return new Product(
                     rs.getLong("id"),
                     rs.getString("name"),
-                    rs.getFloat("price")
+                    rs.getFloat("price"),
+                    rs.getString("description"),
+                    rs.getString("product_url")
             );
         }, id);
         wishlist.setProducts(items);
@@ -95,5 +92,10 @@ public class WishlistRepository {
             ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)
         """;
         jdbcTemplate.update(sql, wishlistId, productId, quantity);
+    }
+
+    private Wishlist getWishlistById(long id) {
+        String sql = "SELECT * FROM wishlist WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, wishlistRowMapper, id);
     }
 }
