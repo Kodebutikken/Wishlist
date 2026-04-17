@@ -3,6 +3,7 @@ package com.Kodebutikken.wishlist.repository;
 import com.Kodebutikken.wishlist.model.Product;
 import com.Kodebutikken.wishlist.model.Visibility;
 import com.Kodebutikken.wishlist.model.Wishlist;
+import com.Kodebutikken.wishlist.model.WishlistItem;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -25,6 +26,7 @@ public class WishlistRepository {
         }
         wishlist.setVisibility(Visibility.valueOf(rs.getString("visibility"))
         );
+        wishlist.setProfileId(rs.getLong("profile_id"));
         return wishlist;
     };
 
@@ -72,16 +74,17 @@ public class WishlistRepository {
     public Wishlist getWishlistWithItems(Long id) {
         Wishlist wishlist = getWishlistById(id);
         String sql = "SELECT wi.quantity, p.id, p.name, p.price, p.description, p.product_url FROM wishlist_item wi JOIN product p ON wi.product_id = p.id WHERE wi.wishlist_id = ? ";
-        List<Product> items = jdbcTemplate.query(sql, (rs, rowNum) -> {
-            return new Product(
+        List<WishlistItem> items = jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Product product = new Product(
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getFloat("price"),
                     rs.getString("description"),
                     rs.getString("product_url")
             );
+            return new WishlistItem(product, rs.getInt("quantity"));
         }, id);
-        wishlist.setProducts(items);
+        wishlist.setItems(items);
         return wishlist;
     }
 

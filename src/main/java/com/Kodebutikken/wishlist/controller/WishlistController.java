@@ -47,12 +47,6 @@ public class WishlistController {
         return "/profile/wishlist";
     }
 
-
-
-
-
-
-
     @GetMapping("/create")
     public String showCreateWishlistForm(HttpSession session, Model model) {
         if (session.getAttribute("profileId") == null) {
