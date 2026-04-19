@@ -26,6 +26,14 @@
                 <a th:href="@{/wishlists}" class="btn">
                      <button type="button">Tilføj en gave til listen ( SNART :-) )</button>
                 </a>
+
+                <a th:href="@{/wishlists/{id}/share(id=${wishlist.id})}" class="btn">
+                     <button type="button">Del denne ønskeliste</button>
+                </a>
+
+                <a th:href="@{/wishlists}" class="btn">
+                     <button type="button">Tilbage til dine ønskelister</button>
+                </a>
             </div>
         </div>
     </main>
