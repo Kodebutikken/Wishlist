@@ -1,5 +1,6 @@
 package com.Kodebutikken.wishlist.repository;
 
+import com.Kodebutikken.wishlist.exception.DatabaseOperationException;
 import com.Kodebutikken.wishlist.exception.InvalidProfileException;
 import com.Kodebutikken.wishlist.exception.WishlistNotFoundException;
 import com.Kodebutikken.wishlist.model.Product;
