@@ -1,5 +1,6 @@
 package com.Kodebutikken.wishlist.controller;
 
+import com.Kodebutikken.wishlist.exception.DatabaseOperationException;
 import com.Kodebutikken.wishlist.exception.InvalidProfileException;
 import com.Kodebutikken.wishlist.exception.ProfileNotFoundException;
 import com.Kodebutikken.wishlist.exception.WishlistNotFoundException;
@@ -11,6 +12,15 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(DatabaseOperationException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public String handleDatabaseOperationException(DatabaseOperationException ex, Model model) {
+        model.addAttribute("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        model.addAttribute("error", HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+        model.addAttribute("message", ex.getMessage());
+        return "error";
+    }
 
     @ExceptionHandler(InvalidProfileException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)

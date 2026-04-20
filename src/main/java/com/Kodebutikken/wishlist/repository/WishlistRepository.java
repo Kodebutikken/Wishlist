@@ -112,7 +112,16 @@ public class WishlistRepository {
         }
     }
 
-    private Wishlist getWishlistById(long id) {
+    public void updateWishlistVisibility(Long id, Visibility visibility) {
+        String sql = "UPDATE wishlist SET visibility = ? WHERE id = ?";
+        try {
+            jdbcTemplate.update(sql, visibility.name(), id);
+        } catch (Exception e) {
+            throw new DatabaseOperationException("Synligheden på ønskelisten med id: " + id + " Kunne ikke opdateres.");
+        }
+    }
+
+    public Wishlist getWishlistById(long id) {
         String sql = "SELECT * FROM wishlist WHERE id = ?";
         try {
             return jdbcTemplate.queryForObject(sql, wishlistRowMapper, id);
