@@ -1,6 +1,7 @@
 package com.Kodebutikken.wishlist.service;
 
 
+import com.Kodebutikken.wishlist.exception.WishlistNotFoundException;
 import com.Kodebutikken.wishlist.model.Wishlist;
 import com.Kodebutikken.wishlist.repository.WishlistRepository;
 import org.springframework.stereotype.Service;

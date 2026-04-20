@@ -26,9 +26,9 @@
         <div class="form-group">
             <label for="visibility">Synlighed:</label>
             <select id="visibility" th:field="*{visibility}" required>
-                <option th:each="visibilityOptions : ${visibilityOptions}"
-                        th:value="${visibilityOptions}"
-                        th:text="${visibilityOptions.name()}">
+                <option th:each="visibilityOption : ${visibilityOptions}"
+                        th:value="${visibilityOption}"
+                        th:text="${visibilityOption.displayName}">
                 </option>
             </select>
         </div>

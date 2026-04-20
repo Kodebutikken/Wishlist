@@ -1,6 +1,8 @@
 package com.Kodebutikken.wishlist.repository;
 
+import com.Kodebutikken.wishlist.exception.ProfileNotFoundException;
 import com.Kodebutikken.wishlist.model.Profile;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -38,7 +40,11 @@ public class ProfileRepository {
 
     public Profile getProfileById(Long id) {
         String sql = "SELECT * FROM profile WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, profileQueryMapper, id);
+        try {
+            return jdbcTemplate.queryForObject(sql, profileQueryMapper, id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ProfileNotFoundException("Profil med ID " + id + " ikke fundet.");
+        }
     }
 
     public void updateProfile(Profile profile, Long profileId) {

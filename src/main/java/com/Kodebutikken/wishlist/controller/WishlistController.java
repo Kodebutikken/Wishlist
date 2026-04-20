@@ -113,7 +113,7 @@ public class WishlistController {
         }
         model.addAttribute("wishlistId", wishlistId);
         model.addAttribute("products", productService.getAllProducts());
-        return "wishlist/addWish"; // Return the view name for adding a product to a wishlist
+        return "wishlist/addWish";
     }
 
     @PostMapping("/{wishlistId}/wish/add")
