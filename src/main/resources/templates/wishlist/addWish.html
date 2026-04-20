@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Tilføj ønske</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+</head>
+<body>
+    <main class="form-container">
+        <h1>Tilføj et ønske</h1>
+        <form th:action="@{/wishlists/{wishlistId}/wish/add(wishlistId=${wishlistId})}" method="post">
+            <div class="form-group">
+                <label for="productId">Produkt:</label>
+                <select id="productId" name="productId" required>
+                    <option value="">Vælg et produkt</option>
+                    <option th:each="product : ${products}"
+                            th:value="${product.id}"
+                            th:text="|${product.name} - ${product.price} DKK|">
+                        Produkt
+                    </option>
+                </select>
+                <p th:if="${products.isEmpty()}">Der findes ingen produkter endnu. Opret et produkt først.</p>
+            </div>
+            <div class="form-group">
+                <label for="quantity">Antal:</label>
+                <input type="number" id="quantity" name="quantity" min="1" required>
+            </div>
+            <button type="submit">Tilføj Ønske</button>
+        </form>
+
+        <div class="button-row-10 justify-center">
+            <a th:href="@{/products/create(redirectWishlistId=${wishlistId})}">
+                <button type="button">Opret nyt produkt</button>
+            </a>
+            <a th:href="@{/wishlists/{id}(id=${wishlistId})}">
+                <button type="button">Tilbage til ønskelisten</button>
+            </a>
+        </div>
+    </main>
+
+</body>
+</html>

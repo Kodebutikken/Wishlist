@@ -10,7 +10,7 @@ public class Wishlist {
     private LocalDate dueDate;
     private Visibility visibility;
     private Long profileId;
-    private List<Product> products = new ArrayList<>();
+    private List<WishlistItem> items = new ArrayList<>();
 
     public Wishlist(long id, String name, LocalDate dueDate, Visibility visibility, Long profileId) {
         this.id = id;
@@ -25,13 +25,8 @@ public class Wishlist {
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public long getId() {
@@ -62,11 +57,11 @@ public class Wishlist {
         this.profileId = profileId;
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public List<WishlistItem> getItems() {
+        return items;
     }
-    public void setProducts(List<Product> products) {
-        this.products = products;
+    public void setItems(List<WishlistItem> items) {
+        this.items = items;
     }
 
 }

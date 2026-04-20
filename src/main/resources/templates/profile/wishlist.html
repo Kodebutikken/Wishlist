@@ -2,12 +2,41 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="da">
 <head>
   <meta charset="UTF-8">
-  <title> - Ønskeliste</title>
+  <title th:text="${wishlist.name} + ' - Ønskeliste'">Din Ønskeliste</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" th:href="@{/styles.css}">
   <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 </head>
 <body>
+    <main class="container">
+        <div>
+            <h1 th:text="${wishlist.name}">Ønskeliste Navn</h1>
+            <p th:text="'Antal gaver: ' + ${wishlist.items.size()}">Antal gaver: 0</p>
+            <p th:text="'Synlighed: ' + ${wishlist.visibility.displayName}">Synlighed: Ukendt</p>
+            <div class="gift-list">
+                <div th:if="${!wishlist.items.isEmpty()}" th:each="item : ${wishlist.items}" class="product-item">
+                    <h2 th:text="${item.product.name}">Gave Navn</h2>
+                    <p th:text="'Antal: ' + ${item.quantity}">Antal: 0</p>
+                    <p th:text="'Pris: ' + ${item.product.price} + ' DKK'">Pris: 0 DKK</p>
+                    <p th:text="'Beskrivelse: ' + ${item.product.description}">Beskrivelse: Ingen beskrivelse</p>
+                    <p th:text="'URL: ' + ${item.product.productUrl}">URL: Ingen URL</p>
+                </div>
+                <div th:if="${wishlist.items.isEmpty()}" class="no-gifts">
+                    <p>Der er ingen gaver i denne ønskeliste.</p>
+                </div>
+                <a th:href="@{/wishlists/{wishlistId}/wish/add(wishlistId=${wishlist.id})}">
+                     <button type="button">Tilføj en gave til listen</button>
+                </a>
 
+                <a th:href="@{/wishlists/{id}/share(id=${wishlist.id})}" class="btn">
+                     <button type="button">Del denne ønskeliste</button>
+                </a>
+
+                <a th:href="@{/wishlists}" class="btn">
+                     <button type="button">Tilbage til dine ønskelister</button>
+                </a>
+            </div>
+        </div>
+    </main>
 </body>
 </html>

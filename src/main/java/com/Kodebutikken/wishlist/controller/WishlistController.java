@@ -2,6 +2,7 @@ package com.Kodebutikken.wishlist.controller;
 
 import com.Kodebutikken.wishlist.model.Visibility;
 import com.Kodebutikken.wishlist.model.Wishlist;
+import com.Kodebutikken.wishlist.service.ProductService;
 import com.Kodebutikken.wishlist.service.WishlistService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -11,18 +12,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/wishlist")
+@RequestMapping("/wishlists")
 public class WishlistController {
     //TODO: Implement the wishlist controller to handle creating, viewing, and managing wishlists for users.
     // This will include methods for adding items to a wishlist, viewing a specific wishlist,
     // and possibly sharing wishlists with others.
 
     private final WishlistService wishlistService;
-    public WishlistController(WishlistService wishlistService) {
+    private final ProductService productService;
+
+    public WishlistController(WishlistService wishlistService, ProductService productService) {
         this.wishlistService = wishlistService;
+        this.productService = productService;
     }
 
-    @GetMapping("/wishlists")
+    @GetMapping()
     public String viewWishlists(HttpSession session, Model model) {
         if (session.getAttribute("profileId") == null) {
             return "redirect:/profile/login";
@@ -32,6 +36,24 @@ public class WishlistController {
         model.addAttribute("wishlists", wishlists);
 
         return "profile/wishlists";
+    }
+
+    @GetMapping("/{id}")
+    public String viewWishlist(@PathVariable Long id, HttpSession session, Model model) {
+        if (session.getAttribute("profileId") == null) {
+            return "redirect:/profile/login";
+        }
+        Wishlist wishlist = wishlistService.getWishlistById(id);
+        if (wishlist == null) {
+            return "redirect:/wishlists";
+        }
+        if(!(wishlist.getVisibility() == Visibility.PUBLIC) && !wishlist.getProfileId().equals(session.getAttribute("profileId"))) {
+            return "redirect:/wishlists";
+        }
+
+        model.addAttribute("wishlist", wishlist);
+        model.addAttribute("wishlistId", id);
+        return "/profile/wishlist";
     }
 
     @GetMapping("/create")
@@ -54,7 +76,7 @@ public class WishlistController {
             return "redirect:/profile/login";
         }
         wishlistService.createWishlist(wishlist, (Long) session.getAttribute("profileId"));
-        return "redirect:/wishlist/wishlists";
+        return "redirect:/wishlists";
     }
 
     @GetMapping("/delete/{id}")
@@ -63,7 +85,7 @@ public class WishlistController {
             return "redirect:/profile/login";
         }
         wishlistService.deleteWishlist(id);
-        return "redirect:/wishlist"; // Redirect to the wishlist page after deletion
+        return "redirect:/wishlists";
     }
 
     @GetMapping("/edit/{id}")
@@ -81,8 +103,19 @@ public class WishlistController {
             return "redirect:/profile/login";
         }
         wishlistService.updateWishlist(wishlist);
-        return "redirect:/wishlist/wishlists";
+        return "redirect:/wishlists";
     }
+
+    @GetMapping("/{wishlistId}/wish/add")
+    public String showAddWishForm(@PathVariable Long wishlistId, HttpSession session, Model model) {
+        if (session.getAttribute("profileId") == null) {
+            return "redirect:/profile/login";
+        }
+        model.addAttribute("wishlistId", wishlistId);
+        model.addAttribute("products", productService.getAllProducts());
+        return "wishlist/addWish"; // Return the view name for adding a product to a wishlist
+    }
+
     @PostMapping("/{wishlistId}/wish/add")
     public String addProductToWishlist(@PathVariable Long wishlistId,
                                        @RequestParam Long productId,
@@ -92,7 +125,7 @@ public class WishlistController {
             return "redirect:/profile/login";
         }
         wishlistService.addProductToWishlist(wishlistId, productId, quantity);
-        return "redirect:/wishlist/" + wishlistId;
+        return "redirect:/wishlists/" + wishlistId;
     }
 
     @GetMapping("/{wishlistId}/wish/remove/{productId}")
@@ -103,6 +136,19 @@ public class WishlistController {
             return "redirect:/profile/login";
         }
         wishlistService.removeProductFromWishlist(wishlistId, productId);
-        return "redirect:/wishlist/" + wishlistId;
+        return "redirect:/wishlists/" + wishlistId;
+    }
+
+    @GetMapping("/{wishlistId}/share")
+    public String shareWishlist(@PathVariable Long wishlistId, HttpSession session, Model model) {
+        if (session.getAttribute("profileId") == null) {
+            return "redirect:/profile/login";
+        }
+        Wishlist wishlist = wishlistService.getWishlistById(wishlistId);
+        if (wishlist == null || !wishlist.getProfileId().equals(session.getAttribute("profileId"))) {
+            return "redirect:/wishlists";
+        }
+        model.addAttribute("wishlist", wishlist);
+        return "wishlist/share";
     }
 }

@@ -14,13 +14,18 @@
     <div class="wishlist-list">
         <div th:if="${!wishlists.isEmpty()}" th:each="wishlist : ${wishlists}" class="wishlist-item">
             <h2 th:text="${wishlist.name}">Ønskeliste Navn</h2>
-            <p th:text="'Antal gaver: ' + ${wishlist.getProducts().size()}">Antal gaver: 0</p>
-            <a th:href="@{/profile/wishlists/{id}(id=${wishlist.id})}" class="btn">Se detaljer</a>
+            <p th:text="'Antal gaver: ' + ${wishlist.items.size()}">Antal gaver: 0</p>
+            <a th:href="@{/wishlists/{id}(id=${wishlist.id})}" class="btn">Se detaljer</a>
         </div>
     </div>
 
+    <div class="no-wishlists" th:if="${wishlists.isEmpty()}">
+        <h2>Du har ingen ønskelister endnu.</h2>
+        <p>Klik på knappen nedenfor for at oprette din første ønskeliste!</p>
+    </div>
+
     <div class="button-row-10 justify-center">
-        <a th:href="@{/wishlist/create}">
+        <a th:href="@{/wishlists/create}">
             <button type="button">Opret ny ønskeliste</button>
         </a>
     </div>
