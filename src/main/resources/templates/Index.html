@@ -8,18 +8,20 @@
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 </head>
 <body>
+<nav th:replace="~{fragments/fragments :: navbar}"></nav>
 <main class="container">
     <h1>Velkommen til Wishlist</h1>
     <p>Log ind eller opret en bruger for at komme i gang.</p>
 
     <div class="button-row-10 justify-center">
         <a th:href="@{/profile/login}">
-            <button type="button">Log ind</button>
+            <button type="button" class="btn-link-primary">Log ind</button>
         </a>
         <a th:href="@{/profile/register}">
-            <button type="button">Opret bruger</button>
+            <button type="button" class="btn-link-secondary">Opret bruger</button>
         </a>
     </div>
 </main>
+<footer th:replace="~{fragments/fragments :: footer}"></footer>
 </body>
 </html>

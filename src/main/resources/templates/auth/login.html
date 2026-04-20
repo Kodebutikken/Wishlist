@@ -8,7 +8,7 @@
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 </head>
 <body>
-
+<nav th:replace="~{fragments/fragments :: navbar}"></nav>
 <main class="container">
     <form th:action="@{/profile/login}" method="post">
         <div class="form-container">
@@ -24,9 +24,10 @@
                 <input type="password" id="password" name="password" required>
             </div>
 
-            <button type="submit">Log ind</button>
+            <button class="btn-link-primary" type="submit">Log ind</button>
         </div>
     </form>
 </main>
+<footer th:replace="~{fragments/fragments :: footer}"></footer>
 </body>
 </html>

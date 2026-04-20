@@ -7,10 +7,12 @@ import java.util.List;
 public class Wishlist {
     private Long id;
     private String name;
+    private String imageUrl;
     private LocalDate dueDate;
     private Visibility visibility;
     private Long profileId;
     private List<WishlistItem> items = new ArrayList<>();
+    private int itemCount;
 
     public Wishlist(long id, String name, LocalDate dueDate, Visibility visibility, Long profileId) {
         this.id = id;
@@ -27,6 +29,13 @@ public class Wishlist {
     }
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public long getId() {
@@ -64,4 +73,10 @@ public class Wishlist {
         this.items = items;
     }
 
+    public int getItemCount() {
+        return itemCount;
+    }
+    public void setItemCount(int itemCount) {
+        this.itemCount = itemCount;
+    }
 }

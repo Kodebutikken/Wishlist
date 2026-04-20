@@ -1,42 +1,83 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="da">
 <head>
-  <meta charset="UTF-8">
-  <title th:text="${wishlist.name} + ' - Ønskeliste'">Din Ønskeliste</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" th:href="@{/styles.css}">
-  <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+    <meta charset="UTF-8">
+    <title th:text="${wishlist.name} + ' - Ønskeliste'">Din Ønskeliste</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 </head>
 <body>
-    <main class="container">
-        <div>
-            <h1 th:text="${wishlist.name}">Ønskeliste Navn</h1>
-            <p th:text="'Antal gaver: ' + ${wishlist.items.size()}">Antal gaver: 0</p>
-            <p th:text="'Synlighed: ' + ${wishlist.visibility.displayName}">Synlighed: Ukendt</p>
-            <div class="gift-list">
-                <div th:if="${!wishlist.items.isEmpty()}" th:each="item : ${wishlist.items}" class="product-item">
-                    <h2 th:text="${item.product.name}">Gave Navn</h2>
-                    <p th:text="'Antal: ' + ${item.quantity}">Antal: 0</p>
-                    <p th:text="'Pris: ' + ${item.product.price} + ' DKK'">Pris: 0 DKK</p>
-                    <p th:text="'Beskrivelse: ' + ${item.product.description}">Beskrivelse: Ingen beskrivelse</p>
-                    <p th:text="'URL: ' + ${item.product.productUrl}">URL: Ingen URL</p>
-                </div>
-                <div th:if="${wishlist.items.isEmpty()}" class="no-gifts">
-                    <p>Der er ingen gaver i denne ønskeliste.</p>
-                </div>
-                <a th:href="@{/wishlists/{wishlistId}/wish/add(wishlistId=${wishlist.id})}">
-                     <button type="button">Tilføj en gave til listen</button>
-                </a>
-
-                <a th:href="@{/wishlists/{id}/share(id=${wishlist.id})}" class="btn">
-                     <button type="button">Del denne ønskeliste</button>
-                </a>
-
-                <a th:href="@{/wishlists}" class="btn">
-                     <button type="button">Tilbage til dine ønskelister</button>
-                </a>
+<nav th:replace="~{fragments/fragments :: navbar}"></nav>
+<main class="container wishlist-page">
+    <section class="wishlist-hero">
+        <div class="wishlist-hero-image-wrapper">
+            <img th:if="${wishlist.imageUrl != null and !#strings.isEmpty(wishlist.imageUrl)}"
+                 th:src="${wishlist.imageUrl}"
+                 th:alt="${wishlist.name}"
+                 class="wishlist-hero-image">
+            <div th:if="${wishlist.imageUrl == null or #strings.isEmpty(wishlist.imageUrl)}"
+                 class="wishlist-hero-placeholder">
+                <span>Intet billede fundet</span>
             </div>
         </div>
-    </main>
+
+        <div class="wishlist-hero-content">
+            <div class="container-heading">
+                <p class="wishlist-eyebrow">Ønskeliste</p>
+                <h1 th:text="${wishlist.name}">Ønskeliste Navn</h1>
+                <p class="wishlist-meta" th:text="'Antal ønsker: ' + ${wishlist.items.size()}">Antal ønsker: 0</p>
+                <p class="wishlist-meta" th:if="${wishlist.dueDate != null}"
+                   th:text="'Begivenhedsdato: ' + ${wishlist.dueDate}">Begivenhedsdato</p>
+                <p class="wishlist-meta" th:text="'Synlighed: ' + ${wishlist.visibility.displayName}">Synlighed</p>
+            </div>
+
+            <div class="button-row-10 wishlist-actions">
+                <a th:href="@{/wishlists/{id}/wish/add(id=${wishlist.id})}" class="btn-link-primary">Tilføj en gave til
+                    listen</a>
+                <a th:if="${wishlist.visibility.name() == 'PRIVATE'}"
+                   th:href="@{/wishlists/{id}/share(id=${wishlist.id})}" class="btn-link-secondary">Del denne
+                    ønskeliste</a>
+                <a th:href="@{/wishlists}" class="btn-link-secondary">Tilbage til dine ønskelister</a>
+                <a th:href="@{/wishlists/delete/{id}(id=${wishlist.id})}" class="btn-link-destructive delete-button">Slet
+                    ønskeliste</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="gift-list-section">
+        <div class="gift-list">
+            <article th:if="${!wishlist.items.isEmpty()}" th:each="item : ${wishlist.items}" class="product-item">
+                <div class="product-item-top">
+                    <div>
+                        <h2 th:text="${item.product.name}">Gave Navn</h2>
+                        <p class="product-price" th:text="${item.product.price} + ' DKK'">Pris: 0 DKK</p>
+                    </div>
+                    <span class="product-quantity" th:text="'Antal: ' + ${item.quantity}">Antal: 0</span>
+                </div>
+
+                <p class="product-description"
+                   th:text="${item.product.description != null and !#strings.isEmpty(item.product.description)} ? ${item.product.description} : 'Ingen beskrivelse tilføjet endnu.'">
+                    Beskrivelse: Ingen beskrivelse
+                </p>
+
+                <div class="product-actions">
+                    <a th:if="${item.product.productUrl != null and !#strings.isEmpty(item.product.productUrl)}"
+                       th:href="${item.product.productUrl}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="product-link">Gå til produkt</a>
+                    <span th:if="${item.product.productUrl == null or #strings.isEmpty(item.product.productUrl)}"
+                          class="product-link-disabled">Produktlink mangler</span>
+                </div>
+            </article>
+
+            <div th:if="${wishlist.items.isEmpty()}" class="no-gifts">
+                <p>Der er ingen gaver i denne ønskeliste endnu.</p>
+            </div>
+        </div>
+    </section>
+</main>
+<footer th:replace="~{fragments/fragments :: footer}"></footer>
 </body>
 </html>

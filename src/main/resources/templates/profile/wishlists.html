@@ -8,14 +8,31 @@
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 </head>
 <body>
+<nav th:replace="~{fragments/fragments :: navbar}"></nav>
 <main class="container">
-    <h1>Dine ønskelister</h1>
-
-    <div class="wishlist-list">
-        <div th:if="${!wishlists.isEmpty()}" th:each="wishlist : ${wishlists}" class="wishlist-item">
+    <div class="Wishlists-header">
+        <h1>Dine ønskelister</h1>
+        <a th:href="@{/wishlists/create}">
+            <button class="btn-link-primary" type="button">Opret ny ønskeliste</button>
+        </a>
+    </div>
+    <div class="WishlistCard-container">
+        <div th:if="${!wishlists.isEmpty()}" th:each="wishlist : ${wishlists}" class="WishlistCard">
+            <div class="wishlist-hero-image-wrapper">
+                <a th:href="@{/wishlists/{id}(id=${wishlist.id})}">
+                    <img th:if="${wishlist.imageUrl != null and !#strings.isEmpty(wishlist.imageUrl)}"
+                         th:src="${wishlist.imageUrl}"
+                         th:alt="${wishlist.name}"
+                         class="wishlist-hero-image">
+                </a>
+                <div th:if="${wishlist.imageUrl == null or #strings.isEmpty(wishlist.imageUrl)}" class="wishlist-hero-placeholder">
+                    <span>Intet billede fundet</span>
+                </div>
+            </div>
             <h2 th:text="${wishlist.name}">Ønskeliste Navn</h2>
-            <p th:text="'Antal gaver: ' + ${wishlist.items.size()}">Antal gaver: 0</p>
-            <a th:href="@{/wishlists/{id}(id=${wishlist.id})}" class="btn">Se detaljer</a>
+            <p th:text="${wishlist.itemCount} + ' Ønsker'">Antal gaver: 0</p>
+            <a th:href="@{/wishlists/{id}(id=${wishlist.id})}">
+                <button class="btn-link-primary" type="button">Se detaljer</button></a>
         </div>
     </div>
 
@@ -25,10 +42,9 @@
     </div>
 
     <div class="button-row-10 justify-center">
-        <a th:href="@{/wishlists/create}">
-            <button type="button">Opret ny ønskeliste</button>
-        </a>
+
     </div>
 </main>
+<footer th:replace="~{fragments/fragments :: footer}"></footer>
 </body>
 </html>

@@ -24,6 +24,7 @@ public class WishlistRepository {
         Wishlist wishlist = new Wishlist();
         wishlist.setId(rs.getLong("id"));
         wishlist.setName(rs.getString("name"));
+        wishlist.setImageUrl(rs.getString("image_url"));
         if (rs.getDate("due_date") != null) {
             wishlist.setDueDate(rs.getDate("due_date").toLocalDate());
         }
@@ -33,14 +34,23 @@ public class WishlistRepository {
         return wishlist;
     };
 
+    private final RowMapper<Wishlist> wishlistWithCountRowMapper = (rs, rowNum) -> {
+        Wishlist wishlist = wishlistRowMapper.mapRow(rs, rowNum);
+        wishlist.setItemCount(rs.getInt("item_count"));
+        return wishlist;
+    };
+
     public List<Wishlist> getWishlistsByProfileId(Long profile_id) {
-        String sql = "SELECT * FROM wishlist WHERE profile_id = ?";
+        String sql = """
+            SELECT w.*, COUNT(wi.product_id) AS item_count FROM wishlist w
+            LEFT JOIN wishlist_item wi ON w.id = wi.wishlist_id
+            WHERE w.profile_id = ? GROUP BY w.id
+        """;
         try {
-            return jdbcTemplate.query(sql, wishlistRowMapper, profile_id);
+            return jdbcTemplate.query(sql, wishlistWithCountRowMapper, profile_id);
         } catch (Exception e) {
             throw new WishlistNotFoundException("Ingen ønskelister fundet for profil med id " + profile_id);
         }
-
     }
 
     private Wishlist getSingleWishlist(String sql, Object param) {
@@ -58,9 +68,10 @@ public class WishlistRepository {
     }
 
     public void createWishlist(Wishlist wishlist, Long profile_id) {
-        String sql = "INSERT INTO wishlist (name, due_date, visibility, profile_id) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO wishlist (name, image_url, due_date, visibility, profile_id) VALUES (?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql,
                 wishlist.getName(),
+                wishlist.getImageUrl(),
                 wishlist.getDueDate(),
                 wishlist.getVisibility().name(),
                 profile_id);
@@ -72,8 +83,9 @@ public class WishlistRepository {
     }
 
     public void updateWishlist(Wishlist wishlist) {
-        String sql = "UPDATE wishlist SET due_date = ?, visibility = ? WHERE id = ?";
+        String sql = "UPDATE wishlist SET image_url = ?, due_date = ?, visibility = ? WHERE id = ?";
         jdbcTemplate.update(sql,
+                wishlist.getImageUrl(),
                 wishlist.getDueDate(),
                 wishlist.getVisibility().name(),
                 wishlist.getId());
@@ -127,8 +139,7 @@ public class WishlistRepository {
         try {
             return jdbcTemplate.queryForObject(sql, wishlistRowMapper, id);
         } catch (Exception e) {
-            throw new WishlistNotFoundException("Ønskelisten med id " + id + " blev ikke fundet.");
+            throw new WishlistNotFoundException("Ønskelisten med id: " + id + " blev ikke fundet.");
         }
-
     }
 }

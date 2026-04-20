@@ -8,12 +8,15 @@
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 </head>
 <body>
-<main class="form-container">
-    <h1>Opret ny ønskeliste</h1>
+<nav th:replace="~{fragments/fragments :: navbar}"></nav>
 
-    <form th:action="@{/wishlists/create}" th:object="${wishlist}" method="post" class="wishlist-form">
+<main class="container">
+    <div class="form-container">
+        <h1>Opret ny ønskeliste</h1>
 
-        <input type="hidden" id="profileId" th:field="*{profileId}" th:value="${profileId}"/>
+        <form th:action="@{/wishlists/create}" th:object="${wishlist}" method="post" class="wishlist-form">
+
+            <input type="hidden" id="profileId" th:field="*{profileId}" th:value="${profileId}"/>
 
         <div class="form-group">
             <label for="name">Navn på ønskeliste:</label>
@@ -33,10 +36,15 @@
             </select>
         </div>
 
-
-        <button type="submit" class="btn">Opret ønskeliste</button>
-    </form>
+            <div class="form-group">
+                <button class="btn-link-primary" type="submit">Opret ønskeliste</button>
+                <button class="btn-link-secondary" type="button" onclick="window.history.back()">Annuller</button>
+                <small> Felter markeret med * er påkrævet</small>
+            </div>
+        </form>
+    </div>
 </main>
 
+<footer th:replace="~{fragments/fragments :: footer}"></footer>
 </body>
 </html>

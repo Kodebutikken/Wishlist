@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+
+<nav th:fragment="navbar" class="site-navbar">
+    <div class="navbar-inner">
+        <div class="navbar-brand">
+            <a th:href="@{/}" class="navbar-logo" aria-label="Gå til forsiden">
+                <span class="navbar-logo-mark">W</span>
+                <span class="navbar-logo-text">Wishlist</span>
+            </a>
+        </div>
+
+        <ul class="navbar-menu">
+            <li><a th:href="@{/}">Hjem</a></li>
+            <li><a th:href="@{/wishlists}">Ønskelister</a></li>
+        </ul>
+
+        <div class="navbar-actions">
+            <a th:if="${session.profileId == null}" th:href="@{/profile/login}" class="navbar-action-link">Log ind</a>
+            <a th:if="${session.profileId == null}" th:href="@{/profile/register}" class="navbar-action-button">Opret bruger</a>
+
+            <a th:if="${session.profileId != null}" th:href="@{/profile}" class="navbar-action-link">Min profil</a>
+            <a th:if="${session.profileId != null}" th:href="@{/profile/logout}" class="navbar-action-button">Log ud</a>
+        </div>
+    </div>
+</nav>
+
+<footer th:fragment="footer">
+    <p>Wishlist - Kodebutikken · E-mail: <a href="mailto:kontakt@kodebutikken.dk"> kontakt@kodebutikken.dk </a> · Tlf: <a
+            href="tel:+4512345678">+45 1234 5678</a></p>
+</footer>
+
+</html>

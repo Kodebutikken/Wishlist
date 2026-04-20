@@ -7,6 +7,8 @@
     <link rel="stylesheet" th:href="@{/styles.css}">
 </head>
 <body>
+<nav th:replace="~{fragments/fragments :: navbar}"></nav>
+
 <main>
     <div class="error-container">
         <h1>Ups! Noget gik galt.</h1>
@@ -16,9 +18,12 @@
             <p><strong>Fejl:</strong> <span th:text="${error}">Intern serverfejl</span></p>
             <p><strong>Besked:</strong> <span th:text="${message}">Uventet fejl</span></p>
         </div>
-        <a th:href="@{/}" class="cta-button">Tilbage til forsiden</a>
+        <a th:href="@{/}">
+            <button type="button" class="btn-link-primary">Tilbage til forsiden</button>
+        </a>
     </div>
 </main>
 
+<footer th:replace="~{fragments/fragments :: footer}"></footer>
 </body>
 </html>
