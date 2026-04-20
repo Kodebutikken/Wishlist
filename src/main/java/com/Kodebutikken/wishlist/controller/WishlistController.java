@@ -44,6 +44,7 @@ public class WishlistController {
             return "redirect:/wishlists";
         }
         model.addAttribute("wishlist", wishlist);
+        model.addAttribute("wishlistId", id);
         return "/profile/wishlist";
     }
 
@@ -96,6 +97,16 @@ public class WishlistController {
         wishlistService.updateWishlist(wishlist);
         return "redirect:/wishlists";
     }
+
+    @GetMapping("/{wishlistId}/wish/add")
+    public String showAddWishForm(@PathVariable Long wishlistId, HttpSession session, Model model) {
+        if (session.getAttribute("profileId") == null) {
+            return "redirect:/profile/login";
+        }
+        model.addAttribute("wishlistId", wishlistId);
+        return "wishlist/addWish"; // Return the view name for adding a product to a wishlist
+    }
+
     @PostMapping("/{wishlistId}/wish/add")
     public String addProductToWishlist(@PathVariable Long wishlistId,
                                        @RequestParam Long productId,
@@ -105,7 +116,7 @@ public class WishlistController {
             return "redirect:/profile/login";
         }
         wishlistService.addProductToWishlist(wishlistId, productId, quantity);
-        return "redirect:/wishlist/" + wishlistId;
+        return "redirect:/wishlists/" + wishlistId;
     }
 
     @GetMapping("/{wishlistId}/wish/remove/{productId}")
@@ -116,6 +127,6 @@ public class WishlistController {
             return "redirect:/profile/login";
         }
         wishlistService.removeProductFromWishlist(wishlistId, productId);
-        return "redirect:/wishlist/" + wishlistId;
+        return "redirect:/wishlists/" + wishlistId;
     }
 }

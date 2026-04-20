@@ -18,13 +18,13 @@
                     <p th:text="'Antal: ' + ${item.quantity}'">Antal: 0</p>
                     <p th:text="'Pris: ' + ${item.product.price} + ' DKK'">Pris: 0 DKK</p>
                     <p th:text="'Beskrivelse: ' + ${item.product.description}">Beskrivelse: Ingen beskrivelse</p>
-                    <p th:text="'URL: ' + ${item.product.url}">URL: Ingen URL</p>
+                    <p th:text="'URL: ' + ${item.product.productUrl}">URL: Ingen URL</p>
                 </div>
                 <div th:if="${wishlist.items.isEmpty()}" class="no-gifts">
                     <p>Der er ingen gaver i denne ønskeliste.</p>
                 </div>
-                <a th:href="@{/wishlists}" class="btn">
-                     <button type="button">Tilføj en gave til listen ( SNART :-) )</button>
+                <a th:href="@{/wishlists/{wishlistId}/wish/add(wishlistId=${wishlist.id})}">
+                     <button type="button">Tilføj en gave til listen</button>
                 </a>
 
                 <a th:href="@{/wishlists/{id}/share(id=${wishlist.id})}" class="btn">
