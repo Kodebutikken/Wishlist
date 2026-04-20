@@ -1,5 +1,7 @@
 package com.Kodebutikken.wishlist.repository;
 
+import com.Kodebutikken.wishlist.exception.InvalidProfileException;
+import com.Kodebutikken.wishlist.exception.WishlistNotFoundException;
 import com.Kodebutikken.wishlist.model.Product;
 import com.Kodebutikken.wishlist.model.Visibility;
 import com.Kodebutikken.wishlist.model.Wishlist;
@@ -32,7 +34,12 @@ public class WishlistRepository {
 
     public List<Wishlist> getWishlistsByProfileId(Long profile_id) {
         String sql = "SELECT * FROM wishlist WHERE profile_id = ?";
-        return jdbcTemplate.query(sql, wishlistRowMapper, profile_id);
+        try {
+            return jdbcTemplate.query(sql, wishlistRowMapper, profile_id);
+        } catch (Exception e) {
+            throw new WishlistNotFoundException("Ingen ønskelister fundet for profil med id " + profile_id);
+        }
+
     }
 
     private Wishlist getSingleWishlist(String sql, Object param) {
@@ -73,6 +80,10 @@ public class WishlistRepository {
 
     public Wishlist getWishlistWithItems(Long id) {
         Wishlist wishlist = getWishlistById(id);
+
+        if(wishlist == null) {
+            throw new WishlistNotFoundException("Ønskelisten med id " + id + " blev ikke fundet.");
+        }
         String sql = "SELECT wi.quantity, p.id, p.name, p.price, p.description, p.product_url FROM wishlist_item wi JOIN product p ON wi.product_id = p.id WHERE wi.wishlist_id = ? ";
         List<WishlistItem> items = jdbcTemplate.query(sql, (rs, rowNum) -> {
             Product product = new Product(
@@ -94,11 +105,20 @@ public class WishlistRepository {
             VALUES (?, ?, ?)
             ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)
         """;
-        jdbcTemplate.update(sql, wishlistId, productId, quantity);
+        try {
+            jdbcTemplate.update(sql, wishlistId, productId, quantity);
+        } catch (Exception e) {
+            throw new InvalidProfileException("Du har ikke tilladelse til at tilføje produkter til denne ønskeliste.");
+        }
     }
 
     private Wishlist getWishlistById(long id) {
         String sql = "SELECT * FROM wishlist WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, wishlistRowMapper, id);
+        try {
+            return jdbcTemplate.queryForObject(sql, wishlistRowMapper, id);
+        } catch (Exception e) {
+            throw new WishlistNotFoundException("Ønskelisten med id " + id + " blev ikke fundet.");
+        }
+
     }
 }
