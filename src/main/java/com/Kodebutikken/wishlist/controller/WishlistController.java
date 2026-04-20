@@ -44,9 +44,13 @@ public class WishlistController {
             return "redirect:/profile/login";
         }
         Wishlist wishlist = wishlistService.getWishlistById(id);
-        if (wishlist == null || !wishlist.getProfileId().equals(session.getAttribute("profileId"))) {
+        if (wishlist == null) {
             return "redirect:/wishlists";
         }
+        if(!(wishlist.getVisibility() == Visibility.PUBLIC) && !wishlist.getProfileId().equals(session.getAttribute("profileId"))) {
+            return "redirect:/wishlists";
+        }
+
         model.addAttribute("wishlist", wishlist);
         model.addAttribute("wishlistId", id);
         return "/profile/wishlist";
@@ -133,5 +137,18 @@ public class WishlistController {
         }
         wishlistService.removeProductFromWishlist(wishlistId, productId);
         return "redirect:/wishlists/" + wishlistId;
+    }
+
+    @GetMapping("/{wishlistId}/share")
+    public String shareWishlist(@PathVariable Long wishlistId, HttpSession session, Model model) {
+        if (session.getAttribute("profileId") == null) {
+            return "redirect:/profile/login";
+        }
+        Wishlist wishlist = wishlistService.getWishlistById(wishlistId);
+        if (wishlist == null || !wishlist.getProfileId().equals(session.getAttribute("profileId"))) {
+            return "redirect:/wishlists";
+        }
+        model.addAttribute("wishlist", wishlist);
+        return "wishlist/share";
     }
 }

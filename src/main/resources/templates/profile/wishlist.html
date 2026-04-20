@@ -12,6 +12,7 @@
         <div>
             <h1 th:text="${wishlist.name}">Ønskeliste Navn</h1>
             <p th:text="'Antal gaver: ' + ${wishlist.items.size()}">Antal gaver: 0</p>
+            <p th:text="'Synlighed: ' + ${wishlist.visibility.displayName}">Synlighed: Ukendt</p>
             <div class="gift-list">
                 <div th:if="${!wishlist.items.isEmpty()}" th:each="item : ${wishlist.items}" class="product-item">
                     <h2 th:text="${item.product.name}">Gave Navn</h2>
