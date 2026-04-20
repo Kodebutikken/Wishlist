@@ -143,16 +143,17 @@ public class WishlistController {
         return "redirect:/wishlists/" + wishlistId;
     }
 
-    @GetMapping("/{wishlistId}/share")
-    public String shareWishlist(@PathVariable Long wishlistId, HttpSession session, Model model) {
+    @GetMapping("/{id}/share")
+    public String shareWishlist(@PathVariable Long id, HttpSession session, Model model) {
         if (session.getAttribute("profileId") == null) {
             return "redirect:/profile/login";
         }
-        Wishlist wishlist = wishlistService.getWishlistById(wishlistId);
+        Wishlist wishlist = wishlistService.getWishlistById(id);
         if (wishlist == null || !wishlist.getProfileId().equals(session.getAttribute("profileId"))) {
             return "redirect:/wishlists";
         }
+        wishlistService.shareWishlist(id, Visibility.PUBLIC);
         model.addAttribute("wishlist", wishlist);
-        return "wishlist/share";
+        return "profile/wishlist";
     }
 }
