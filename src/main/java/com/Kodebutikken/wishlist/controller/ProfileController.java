@@ -91,6 +91,8 @@ public class ProfileController {
                 model.addAttribute("profile", profile);
                 model.addAttribute("error", "Adgangskoderne matcher ikke.");
                 return "profile/update";
+            } else {
+                profileService.updatePassword(password, (Long) session.getAttribute("profileId"));
             }
         }
 
