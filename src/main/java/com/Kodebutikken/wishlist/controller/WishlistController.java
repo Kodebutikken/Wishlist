@@ -2,6 +2,7 @@ package com.Kodebutikken.wishlist.controller;
 
 import com.Kodebutikken.wishlist.model.Visibility;
 import com.Kodebutikken.wishlist.model.Wishlist;
+import com.Kodebutikken.wishlist.service.ProductService;
 import com.Kodebutikken.wishlist.service.WishlistService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
@@ -18,8 +19,11 @@ public class WishlistController {
     // and possibly sharing wishlists with others.
 
     private final WishlistService wishlistService;
-    public WishlistController(WishlistService wishlistService) {
+    private final ProductService productService;
+
+    public WishlistController(WishlistService wishlistService, ProductService productService) {
         this.wishlistService = wishlistService;
+        this.productService = productService;
     }
 
     @GetMapping()
@@ -104,6 +108,7 @@ public class WishlistController {
             return "redirect:/profile/login";
         }
         model.addAttribute("wishlistId", wishlistId);
+        model.addAttribute("products", productService.getAllProducts());
         return "wishlist/addWish"; // Return the view name for adding a product to a wishlist
     }
 

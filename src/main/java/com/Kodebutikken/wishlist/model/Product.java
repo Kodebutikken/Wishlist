@@ -8,6 +8,9 @@ public class Product {
     private String productUrl;
 
 
+    public Product() {
+    }
+
     public Product(long id, String name, float price, String description, String productUrl) {
         this.id = id;
         this.name = name;
