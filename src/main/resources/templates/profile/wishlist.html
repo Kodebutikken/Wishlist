@@ -76,6 +76,9 @@
                        class="product-link">Gå til produkt</a>
                     <span th:if="${item.product.productUrl == null or #strings.isEmpty(item.product.productUrl)}"
                           class="product-link-disabled">Produktlink mangler</span>
+                    <a th:if="${wishlist.profileId == viewerId}"
+                       th:href="@{/products/edit/{id}(id=${item.product.id})}"
+                       class="btn-link-secondary edit-button">Rediger produkt</a>
                 </div>
             </article>
 

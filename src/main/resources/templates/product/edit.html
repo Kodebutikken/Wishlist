@@ -32,11 +32,9 @@
             </div>
             <div class="form-actions">
                 <button type="submit" class="btn-link-primary">Gem ændringer</button>
-                <a th:href="@{/products}">
-                    <button type="button" class="btn-link-secondary">
-                        Annuller
-                    </button>
-                </a>
+                <button type="button" class="btn-link-secondary" onclick="window.history.back()">
+                    Annuller
+                </button>
                 <button th:formaction="@{/products/delete/{id}(id=${product.id})}" type="submit"
                         class="btn-link-destructive delete-button">Slet produkt
                 </button>
