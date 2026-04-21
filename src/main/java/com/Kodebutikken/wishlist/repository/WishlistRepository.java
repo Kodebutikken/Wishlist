@@ -16,6 +16,7 @@ import java.util.List;
 @Repository
 public class WishlistRepository {
     private final JdbcTemplate jdbcTemplate;
+
     public WishlistRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -42,10 +43,10 @@ public class WishlistRepository {
 
     public List<Wishlist> getWishlistsByProfileId(Long profile_id) {
         String sql = """
-            SELECT w.*, COUNT(wi.product_id) AS item_count FROM wishlist w
-            LEFT JOIN wishlist_item wi ON w.id = wi.wishlist_id
-            WHERE w.profile_id = ? GROUP BY w.id
-        """;
+                    SELECT w.*, COUNT(wi.product_id) AS item_count FROM wishlist w
+                    LEFT JOIN wishlist_item wi ON w.id = wi.wishlist_id
+                    WHERE w.profile_id = ? GROUP BY w.id
+                """;
         try {
             return jdbcTemplate.query(sql, wishlistWithCountRowMapper, profile_id);
         } catch (Exception e) {
@@ -98,11 +99,10 @@ public class WishlistRepository {
 
     public Wishlist getWishlistWithItems(Long id) {
         Wishlist wishlist = getWishlistById(id);
-
-        if(wishlist == null) {
+        if (wishlist == null) {
             throw new WishlistNotFoundException("Ønskelisten med id " + id + " blev ikke fundet.");
         }
-        String sql = "SELECT wi.quantity, p.id, p.name, p.price, p.description, p.product_url FROM wishlist_item wi JOIN product p ON wi.product_id = p.id WHERE wi.wishlist_id = ? ";
+        String sql = "SELECT wi.quantity, wi.reserved, wi.reserved_by, p.id, p.name, p.price, p.description, p.product_url FROM wishlist_item wi JOIN product p ON wi.product_id = p.id WHERE wi.wishlist_id = ? ";
         List<WishlistItem> items = jdbcTemplate.query(sql, (rs, rowNum) -> {
             Product product = new Product(
                     rs.getLong("id"),
@@ -111,7 +111,10 @@ public class WishlistRepository {
                     rs.getString("description"),
                     rs.getString("product_url")
             );
-            return new WishlistItem(product, rs.getInt("quantity"));
+            return new WishlistItem(product,
+                    rs.getInt("quantity"),
+                    rs.getBoolean("reserved"),
+                    rs.getLong("reserved_by"));
         }, id);
         wishlist.setItems(items);
         return wishlist;
@@ -119,10 +122,10 @@ public class WishlistRepository {
 
     public void addProductToWishlist(Long wishlistId, Long productId, int quantity) {
         String sql = """
-            INSERT INTO wishlist_item (wishlist_id, product_id, quantity)
-            VALUES (?, ?, ?)
-            ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)
-        """;
+                    INSERT INTO wishlist_item (wishlist_id, product_id, quantity)
+                    VALUES (?, ?, ?)
+                    ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)
+                """;
         try {
             jdbcTemplate.update(sql, wishlistId, productId, quantity);
         } catch (Exception e) {
@@ -137,6 +140,16 @@ public class WishlistRepository {
         } catch (Exception e) {
             throw new DatabaseOperationException("Synligheden på ønskelisten med id: " + id + " Kunne ikke opdateres.");
         }
+    }
+
+    public void reserveWish(Long productId, Long wishlistId, Long profileId) {
+        String sql = "UPDATE wishlist_item SET reserved = true, reserved_by = ? WHERE product_id = ? AND wishlist_id = ?";
+        jdbcTemplate.update(sql, profileId, productId, wishlistId);
+    }
+
+    public void unreserveWish(Long productId, Long wishlistId) {
+        String sql = "UPDATE wishlist_item SET reserved = false, reserved_by = NULL WHERE product_id = ? AND wishlist_id = ?";
+        jdbcTemplate.update(sql, productId, wishlistId);
     }
 
     public Wishlist getWishlistById(long id) {

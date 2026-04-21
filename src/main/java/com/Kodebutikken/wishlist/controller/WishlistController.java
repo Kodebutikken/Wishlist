@@ -51,10 +51,11 @@ public class WishlistController {
         if (!(wishlist.getVisibility() == Visibility.PUBLIC) && !wishlist.getProfileId().equals(profileId)) {
             return "redirect:/wishlists";
         }
+        boolean isViewerOwner = wishlist.getProfileId().equals(profileId);
 
         model.addAttribute("wishlist", wishlist);
-        model.addAttribute("wishlistId", id);
         model.addAttribute("viewerId", profileId);
+        model.addAttribute("isViewerOwner", isViewerOwner);
         return "/profile/wishlist";
     }
 
@@ -151,6 +152,25 @@ public class WishlistController {
             return "redirect:/profile/login";
         }
         wishlistService.removeProductFromWishlist(wishlistId, productId);
+        return "redirect:/wishlists/" + wishlistId;
+    }
+
+    @PostMapping("/{wishlistId}/reserve/{productId}")
+    public String reserveProduct(@PathVariable Long wishlistId, @PathVariable Long productId, HttpSession session) {
+        Long profileId = (Long) session.getAttribute("profileId");
+        if (profileId == null) {
+            return "redirect:/profile/login";
+        }
+        wishlistService.reserveWish(productId, wishlistId, profileId);
+        return "redirect:/wishlists/" + wishlistId;
+    }
+
+    @PostMapping("/{wishlistId}/unreserve/{productId}")
+    public String unreserveProduct(@PathVariable Long wishlistId, @PathVariable Long productId, HttpSession session) {
+        if (session.getAttribute("profileId") == null) {
+            return "redirect:/profile/login";
+        }
+        wishlistService.unreserveWish(productId, wishlistId);
         return "redirect:/wishlists/" + wishlistId;
     }
 

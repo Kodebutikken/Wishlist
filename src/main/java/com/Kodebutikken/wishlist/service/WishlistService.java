@@ -37,6 +37,14 @@ public class WishlistService {
         wishlistRepository.updateWishlist(wishlist);
     }
 
+    public void reserveWish(Long productId, Long wishlistId, Long profileId) {
+        wishlistRepository.reserveWish(productId, wishlistId, profileId);
+    }
+
+    public void unreserveWish(Long productId, Long wishlistId) {
+        wishlistRepository.unreserveWish(productId, wishlistId);
+    }
+
     public void addProductToWishlist(Long wishlistId, Long productId, int quantity) {
         wishlistRepository.addProductToWishlist(wishlistId, productId, quantity);
     }
