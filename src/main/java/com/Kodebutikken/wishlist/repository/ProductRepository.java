@@ -1,5 +1,6 @@
 package com.Kodebutikken.wishlist.repository;
 
+import com.Kodebutikken.wishlist.exception.DatabaseOperationException;
 import com.Kodebutikken.wishlist.model.Product;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -51,6 +52,20 @@ public class ProductRepository {
     public List<Product> getProductsByProfileId(Long id) {
         String sql = "SELECT * FROM product WHERE profile_id = ?";
         return jdbcTemplate.query(sql, productRowMapper, id);
+    }
+
+    public void updateProduct(Product product) {
+        String sql = "UPDATE product SET name = ?, price = ?, description = ?, product_url = ? WHERE id = ?";
+        try {
+            jdbcTemplate.update(sql,
+                    product.getName(),
+                    product.getPrice(),
+                    product.getDescription(),
+                    product.getProductUrl(),
+                    product.getId());
+        } catch (Exception e) {
+            throw new DatabaseOperationException("Fejl ved opdatering af produkt med id: " + product.getId());
+        }
     }
 
     public void deleteProduct(Long id) {

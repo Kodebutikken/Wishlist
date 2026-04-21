@@ -34,6 +34,10 @@ public class ProductService {
         productRepository.createProduct(product, profileId);
     }
 
+    public void updateProduct(Product product) {
+        productRepository.updateProduct(product);
+    }
+
     public void deleteProduct(Long id) {
         productRepository.deleteProduct(id);
     }

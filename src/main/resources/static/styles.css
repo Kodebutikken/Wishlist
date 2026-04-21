@@ -221,9 +221,9 @@ footer a {
     width: 50%;
     margin: 0 auto;
     padding: 30px;
-    border: 1px solid #f9f9f9;
-    border-radius: 5px;
-    background-color: #dcdcdc;
+    border: 1px solid #ececec;
+    border-radius: 10px;
+    background-color: #ececec;
 }
 
 .form-container div {
@@ -276,6 +276,7 @@ footer a {
     margin-top: 20px;
 }
 
+.edit-button,
 .delete-button {
     margin-left: auto;
 }
@@ -498,6 +499,7 @@ a {
     line-height: 1.6;
 }
 
+.form-actions,
 .product-actions {
     display: flex;
     align-items: center;
@@ -563,10 +565,5 @@ a {
     .btn-link-secondary,
     .product-link {
         width: 100%;
-    }
-
-    .product-actions {
-        flex-direction: column;
-        align-items: stretch;
     }
 }
