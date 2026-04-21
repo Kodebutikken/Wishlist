@@ -41,7 +41,10 @@ CREATE TABLE wishlist_item
     wishlist_id BIGINT,
     product_id  BIGINT,
     quantity    INT NOT NULL,
+    reserved    BOOLEAN NOT NULL DEFAULT FALSE,
+    reserved_by BIGINT,
     PRIMARY KEY (wishlist_id, product_id),
     FOREIGN KEY (wishlist_id) REFERENCES wishlist (id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES product (id) ON DELETE CASCADE
+    FOREIGN KEY (product_id) REFERENCES product (id) ON DELETE CASCADE,
+    FOREIGN KEY (reserved_by) REFERENCES profile (id) ON DELETE SET NULL
 );
