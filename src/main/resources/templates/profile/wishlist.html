@@ -54,13 +54,14 @@
 
     <section class="gift-list-section">
         <div class="gift-list">
-            <article th:if="${!wishlist.items.isEmpty()}" th:each="item : ${wishlist.items}" class="product-item">
+            <form th:if="${!wishlist.items.isEmpty()}" th:method="post" th:each="item : ${wishlist.items}" class="product-item">
                 <div class="product-item-top">
                     <div>
                         <h2 th:text="${item.product.name}">Gave Navn</h2>
                         <p class="product-price" th:text="${item.product.price} + ' DKK'">Pris: 0 DKK</p>
                     </div>
-                    <span class="product-quantity" th:text="'Antal: ' + ${item.quantity}">Antal: 0</span>
+                    <span class="product-quantity" th:if="${isViewerOwner || !item.reserved}" th:text="'Antal: ' + ${item.quantity}">Antal: 0</span>
+                    <span class="product-reserved" th:if="${!isViewerOwner && item.reserved}">Reserveret</span>
                 </div>
 
                 <p class="product-description"
@@ -76,11 +77,20 @@
                        class="product-link">Gå til produkt</a>
                     <span th:if="${item.product.productUrl == null or #strings.isEmpty(item.product.productUrl)}"
                           class="product-link-disabled">Produktlink mangler</span>
-                    <a th:if="${wishlist.profileId == viewerId}"
+                    <a th:if="${isViewerOwner}"
                        th:href="@{/products/edit/{id}(id=${item.product.id})}"
                        class="btn-link-secondary edit-button">Rediger produkt</a>
+                    <button th:if="${!isViewerOwner && !item.reserved}"
+                            th:formaction="@{/wishlists/{wishlistId}/reserve/{productId}(wishlistId=${wishlist.id}, productId=${item.product.id})}"
+                            type="submit"
+                            class="btn-link-secondary reserve-btn">Reserver ønske</button>
+
+                    <button th:if="${!isViewerOwner && item.reserved && viewerId == item.reservedBy}"
+                            th:formaction="@{/wishlists/{wishlistId}/unreserve/{productId}(wishlistId=${wishlist.id}, productId=${item.product.id})}"
+                            type="submit"
+                            class="btn-link-secondary reserve-btn">Afbryd reservering</button>
                 </div>
-            </article>
+            </form>
 
             <div th:if="${wishlist.items.isEmpty()}" class="no-gifts">
                 <p>Der er ingen gaver i denne ønskeliste endnu.</p>
