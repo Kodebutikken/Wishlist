@@ -175,7 +175,7 @@ public class WishlistController {
     }
 
     @GetMapping("/{id}/share")
-    public String shareWishlist(@PathVariable Long id, HttpSession session, Model model) {
+    public String shareWishlist(@PathVariable Long id, HttpSession session) {
         if (session.getAttribute("profileId") == null) {
             return "redirect:/profile/login";
         }
@@ -184,7 +184,6 @@ public class WishlistController {
             return "redirect:/wishlists";
         }
         wishlistService.shareWishlist(id, Visibility.PUBLIC);
-        model.addAttribute("wishlist", wishlist);
-        return "profile/wishlist";
+        return "redirect:/wishlists/" + id;
     }
 }
