@@ -40,19 +40,21 @@ public class WishlistController {
 
     @GetMapping("/{id}")
     public String viewWishlist(@PathVariable Long id, HttpSession session, Model model) {
-        if (session.getAttribute("profileId") == null) {
+        Long profileId = (Long) session.getAttribute("profileId");
+        if (profileId == null) {
             return "redirect:/profile/login";
         }
         Wishlist wishlist = wishlistService.getWishlistById(id);
         if (wishlist == null) {
             return "redirect:/wishlists";
         }
-        if (!(wishlist.getVisibility() == Visibility.PUBLIC) && !wishlist.getProfileId().equals(session.getAttribute("profileId"))) {
+        if (!(wishlist.getVisibility() == Visibility.PUBLIC) && !wishlist.getProfileId().equals(profileId)) {
             return "redirect:/wishlists";
         }
 
         model.addAttribute("wishlist", wishlist);
         model.addAttribute("wishlistId", id);
+        model.addAttribute("viewerId", profileId);
         return "/profile/wishlist";
     }
 
@@ -102,7 +104,8 @@ public class WishlistController {
             return "redirect:/wishlists";
         }
         model.addAttribute("wishlist", wishlist);
-        return "update"; // Return the view name for editing a wishlist
+        model.addAttribute("visibilityOptions", Visibility.values());
+        return "wishlist/update"; // Return the view name for editing a wishlist
     }
 
     @PostMapping("/edit")
