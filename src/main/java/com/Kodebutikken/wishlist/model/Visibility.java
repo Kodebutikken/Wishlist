@@ -4,7 +4,7 @@
         PUBLIC("Offentlig"),
         PRIVATE("Privat");
 
-        private String displayName;
+        private final String displayName;
 
         Visibility(String displayName) {
             this.displayName = displayName;
