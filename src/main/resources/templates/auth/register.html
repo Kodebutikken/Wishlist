@@ -2,17 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="da">
 <head>
     <meta charset="UTF-8">
-    <title>Register</title>
+    <title>Register profil</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/styles.css}">
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 </head>
 <body>
+<nav th:replace="~{fragments/fragments :: navbar}"></nav>
 
-<main>
+<main class="container">
     <form th:action="@{/profile/register}" th:object="${profile}" method="post">
         <div class="form-container">
-            <h1>Registrer</h1>
+            <h1>Opret en profil</h1>
             <p th:if="${error}" th:text="${error}" style="color:red;"></p>
             <div>
                 <label for="username">Brugernavn:</label>
@@ -29,11 +30,11 @@
                 <input type="password" id="password" th:field="*{password}" required>
             </div>
 
-            <button type="submit">Opret bruger</button>
+            <button class="btn-link-primary" type="submit">Opret bruger</button>
         </div>
     </form>
 </main>
 
-
+<footer th:replace="~{fragments/fragments :: footer}"></footer>
 </body>
 </html>

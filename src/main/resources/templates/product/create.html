@@ -8,43 +8,49 @@
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 </head>
 <body>
-<main class="form-container">
-    <h1>Opret produkt</h1>
+<nav th:replace="~{fragments/fragments :: navbar}"></nav>
 
-    <form th:action="@{/products/create}" th:object="${product}" method="post">
-        <input type="hidden" name="redirectWishlistId" th:value="${redirectWishlistId}">
+<main class="container">
+    <div class="form-container">
+        <h1>Opret produkt</h1>
 
-        <div class="form-group">
-            <label for="name">Produktnavn:</label>
-            <input type="text" id="name" th:field="*{name}" required>
-        </div>
+        <form th:action="@{/products/create}" th:object="${product}" method="post">
+            <input type="hidden" name="redirectWishlistId" th:value="${redirectWishlistId}">
 
-        <div class="form-group">
-            <label for="price">Pris (DKK):</label>
-            <input type="number" id="price" th:field="*{price}" min="0" step="0.01" required>
-        </div>
+            <div class="form-group">
+                <label for="name">Produktnavn:</label>
+                <input type="text" id="name" th:field="*{name}" required>
+            </div>
 
-        <div class="form-group">
-            <label for="description">Beskrivelse:</label>
-            <textarea id="description" th:field="*{description}"></textarea>
-        </div>
+            <div class="form-group">
+                <label for="price">Pris (DKK):</label>
+                <input type="number" id="price" th:field="*{price}" min="0" step="0.01" required>
+            </div>
 
-        <div class="form-group">
-            <label for="productUrl">Produkt-URL:</label>
-            <input type="url" id="productUrl" th:field="*{productUrl}">
-        </div>
+            <div class="form-group">
+                <label for="description">Beskrivelse:</label>
+                <textarea id="description" th:field="*{description}"></textarea>
+            </div>
 
-        <button type="submit">Gem produkt</button>
-    </form>
+            <div class="form-group">
+                <label for="productUrl">Produkt-URL:</label>
+                <input type="url" id="productUrl" th:field="*{productUrl}">
+            </div>
 
-    <div class="button-row-10 justify-center">
-        <a th:if="${redirectWishlistId != null}" th:href="@{/wishlists/{wishlistId}/wish/add(wishlistId=${redirectWishlistId})}">
-            <button type="button">Tilbage til tilføj ønske</button>
-        </a>
-        <a th:if="${redirectWishlistId == null}" th:href="@{/wishlists}">
-            <button type="button">Tilbage til ønskelister</button>
-        </a>
+
+            <div class="button-row-10 justify-center">
+                <button type="submit" class="btn-link-primary">Gem produkt</button>
+                <a th:if="${redirectWishlistId != null}" th:href="@{/wishlists/{wishlistId}/wish/add(wishlistId=${redirectWishlistId})}">
+                    <button type="button" class="btn-link-secondary">Tilbage til tilføj ønske</button>
+                </a>
+                <a th:if="${redirectWishlistId == null}" th:href="@{/wishlists}">
+                    <button type="button" class="btn-link-secondary">Tilbage til ønskelister</button>
+                </a>
+            </div>
+        </form>
     </div>
 </main>
+
+<footer th:replace="~{fragments/fragments :: footer}"></footer>
 </body>
 </html>

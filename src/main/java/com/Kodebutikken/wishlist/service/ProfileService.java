@@ -33,4 +33,8 @@ public class ProfileService {
     public void updateProfile(Profile profile, Long profileId) {
         profileRepository.updateProfile(profile, profileId);
     }
+
+    public void updatePassword(String newPassword, Long profileId) {
+        profileRepository.updatePassword(newPassword, profileId);
+    }
 }

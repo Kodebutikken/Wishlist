@@ -48,7 +48,12 @@ public class ProfileRepository {
     }
 
     public void updateProfile(Profile profile, Long profileId) {
-        String sql = "UPDATE profile SET email = ?, password = ?, username = ? WHERE id = ?";
-        jdbcTemplate.update(sql, profile.getEmail(), profile.getPassword(), profile.getUserName(), profileId);
+        String sql = "UPDATE profile SET email = ?, username = ? WHERE id = ?";
+        jdbcTemplate.update(sql, profile.getEmail(), profile.getUserName(), profileId);
+    }
+
+    public void updatePassword(String newPassword, Long profileId) {
+        String sql = "UPDATE profile SET password = ? WHERE id = ?";
+        jdbcTemplate.update(sql, newPassword, profileId);
     }
 }

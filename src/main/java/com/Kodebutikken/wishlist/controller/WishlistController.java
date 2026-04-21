@@ -47,7 +47,7 @@ public class WishlistController {
         if (wishlist == null) {
             return "redirect:/wishlists";
         }
-        if(!(wishlist.getVisibility() == Visibility.PUBLIC) && !wishlist.getProfileId().equals(session.getAttribute("profileId"))) {
+        if (!(wishlist.getVisibility() == Visibility.PUBLIC) && !wishlist.getProfileId().equals(session.getAttribute("profileId"))) {
             return "redirect:/wishlists";
         }
 
@@ -83,6 +83,10 @@ public class WishlistController {
     public String deleteWishlist(@PathVariable Long id, HttpSession session) {
         if (session.getAttribute("profileId") == null) {
             return "redirect:/profile/login";
+        }
+        Wishlist wishlist = wishlistService.getWishlistById(id);
+        if (wishlist == null || !wishlist.getProfileId().equals(session.getAttribute("profileId"))) {
+            return "redirect:/wishlists";
         }
         wishlistService.deleteWishlist(id);
         return "redirect:/wishlists";
