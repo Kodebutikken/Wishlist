@@ -97,8 +97,12 @@ public class WishlistController {
         if (session.getAttribute("profileId") == null) {
             return "redirect:/profile/login";
         }
-        model.addAttribute("wishlist", wishlistService.getWishlistById(id));
-        return "wishlist/edit"; // Return the view name for editing a wishlist
+        Wishlist wishlist = wishlistService.getWishlistById(id);
+        if (wishlist == null || !wishlist.getProfileId().equals(session.getAttribute("profileId"))) {
+            return "redirect:/wishlists";
+        }
+        model.addAttribute("wishlist", wishlist);
+        return "update"; // Return the view name for editing a wishlist
     }
 
     @PostMapping("/edit")
@@ -116,7 +120,7 @@ public class WishlistController {
             return "redirect:/profile/login";
         }
         model.addAttribute("wishlistId", wishlistId);
-        model.addAttribute("products", productService.getAllProducts());
+        model.addAttribute("products", productService.getProductsByProfileId((Long) session.getAttribute("profileId")));
         return "wishlist/addWish";
     }
 
@@ -127,6 +131,10 @@ public class WishlistController {
                                        HttpSession session) {
         if (session.getAttribute("profileId") == null) {
             return "redirect:/profile/login";
+        }
+        Wishlist wishlist = wishlistService.getWishlistById(wishlistId);
+        if (wishlist == null || !wishlist.getProfileId().equals(session.getAttribute("profileId"))) {
+            return "redirect:/wishlists";
         }
         wishlistService.addProductToWishlist(wishlistId, productId, quantity);
         return "redirect:/wishlists/" + wishlistId;
@@ -143,16 +151,17 @@ public class WishlistController {
         return "redirect:/wishlists/" + wishlistId;
     }
 
-    @GetMapping("/{wishlistId}/share")
-    public String shareWishlist(@PathVariable Long wishlistId, HttpSession session, Model model) {
+    @GetMapping("/{id}/share")
+    public String shareWishlist(@PathVariable Long id, HttpSession session, Model model) {
         if (session.getAttribute("profileId") == null) {
             return "redirect:/profile/login";
         }
-        Wishlist wishlist = wishlistService.getWishlistById(wishlistId);
+        Wishlist wishlist = wishlistService.getWishlistById(id);
         if (wishlist == null || !wishlist.getProfileId().equals(session.getAttribute("profileId"))) {
             return "redirect:/wishlists";
         }
+        wishlistService.shareWishlist(id, Visibility.PUBLIC);
         model.addAttribute("wishlist", wishlist);
-        return "wishlist/share";
+        return "profile/wishlist";
     }
 }

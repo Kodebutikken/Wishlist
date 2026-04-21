@@ -33,12 +33,28 @@ public class ProductRepository {
         return jdbcTemplate.queryForObject(sql, productRowMapper, id);
     }
 
-    public void createProduct(Product product) {
-        String sql = "INSERT INTO product (name, price, description, product_url) VALUES (?, ?, ?, ?)";
+    public Long getProfileIdFromProductId(Long id) {
+        String sql = "SELECT profile_id FROM product WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, Long.class, id);
+    }
+
+    public void createProduct(Product product, Long profileId) {
+        String sql = "INSERT INTO product (name, price, description, product_url, profile_id) VALUES (?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql,
                 product.getName(),
                 product.getPrice(),
                 product.getDescription(),
-                product.getProductUrl());
+                product.getProductUrl(),
+                profileId);
+    }
+
+    public List<Product> getProductsByProfileId(Long id) {
+        String sql = "SELECT * FROM product WHERE profile_id = ?";
+        return jdbcTemplate.query(sql, productRowMapper, id);
+    }
+
+    public void deleteProduct(Long id) {
+        String sql = "DELETE FROM product WHERE id = ?";
+        jdbcTemplate.update(sql, id);
     }
 }

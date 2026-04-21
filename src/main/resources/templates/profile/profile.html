@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
+<head>
+    <meta charset="UTF-8">
+    <title>Din profil</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+</head>
+<body>
+<nav th:replace="~{fragments/fragments :: navbar}"></nav>
+<main class="container profile-page">
+    <section class="profile-hero">
+        <div class="profile-hero-content">
+            <div class="container-heading">
+                <h1>Din profil</h1>
+                <p>Her kan du se dine profiloplysninger</p>
+            </div>
+            <div class="card">
+                <p>Brugernavn: <span th:text="${profile.userName}"></span></p>
+                <p>Email: <span th:text="${profile.email}"></span></p>
+            </div>
+            <div class="button-row-10 justify-center">
+                <a th:href="@{/profile/update}">
+                    <button type="button" class="btn-link-primary">Opdater profil</button>
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
+<footer th:replace="~{fragments/fragments :: footer}"></footer>
+</body>
+</html>

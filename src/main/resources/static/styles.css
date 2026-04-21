@@ -312,6 +312,7 @@ a {
     text-decoration: none;
 }
 
+.products-header,
 .Wishlists-header {
     display: flex;
     justify-content: space-between;

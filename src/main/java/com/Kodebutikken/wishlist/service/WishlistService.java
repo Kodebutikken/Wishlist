@@ -2,6 +2,7 @@ package com.Kodebutikken.wishlist.service;
 
 
 import com.Kodebutikken.wishlist.exception.WishlistNotFoundException;
+import com.Kodebutikken.wishlist.model.Visibility;
 import com.Kodebutikken.wishlist.model.Wishlist;
 import com.Kodebutikken.wishlist.repository.WishlistRepository;
 import org.springframework.stereotype.Service;
@@ -42,5 +43,13 @@ public class WishlistService {
 
     public void removeProductFromWishlist(Long wishlistId, Long productId) {
         wishlistRepository.removeProductFromWishlist(wishlistId, productId);
+    }
+
+    public void shareWishlist(Long id, Visibility visibility) {
+        Wishlist wishlist = wishlistRepository.getWishlistById(id);
+        if (wishlist == null) {
+            throw new WishlistNotFoundException("Ønskeliste med id " + id + " blev ikke fundet");
+        }
+        wishlistRepository.updateWishlistVisibility(id, visibility);
     }
 }
