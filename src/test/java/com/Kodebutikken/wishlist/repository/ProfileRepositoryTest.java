@@ -6,13 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.annotation.DirtiesContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Sql(scripts = "classpath:h2init.sql", executionPhase = BEFORE_TEST_METHOD)
+@Sql(scripts = "classpath:h2init.sql")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class ProfileRepositoryTest {
 
     @Autowired
@@ -20,6 +21,7 @@ class ProfileRepositoryTest {
 
     @Test
     void createProfile_andVerifyLogin() {
+
         Profile profile = new Profile();
         profile.setUserName("newuser");
         profile.setEmail("new@test.dk");
@@ -27,13 +29,13 @@ class ProfileRepositoryTest {
 
         repo.createProfile(profile);
 
-        boolean loginOk = repo.verifyLogin("newuser", "1234");
-
-        assertThat(loginOk).isTrue();
+        assertThat(repo.verifyLogin("newuser", "1234")).isTrue();
+        assertThat(repo.verifyLogin("newuser", "wrongpassword")).isFalse();
     }
 
     @Test
     void verifyLogin_failsWithWrongPassword() {
+
         boolean loginOk = repo.verifyLogin("testuser", "wrongpassword");
 
         assertThat(loginOk).isFalse();
