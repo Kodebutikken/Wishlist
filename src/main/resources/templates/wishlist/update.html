@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Opdater Ønskeliste</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/styles.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
+</head>
+<body>
+<nav th:replace="~{fragments/fragments :: navbar}"></nav>
+<main class="container">
+    <div class="form-container">
+        <h1>Opdater Ønskeliste</h1>
+        <form th:action="@{/wishlists/edit}" th:object="${wishlist}" method="post">
+            <input type="hidden" name="id" th:value="${wishlist.id}">
+            <div th:if="${error}" class="form-error-container">
+                <p th:if="${error}" th:text="${error}"></p>
+            </div>
+            <div class="form-group">
+                <label for="name">Ønskeliste Navn:</label>
+                <input type="text" id="name" name="name" th:field="*{name}" required>
+            </div>
+            <div class="form-group">
+                <label for="imageUrl">Billede URL:</label>
+                <input type="text" id="imageUrl" name="imageUrl" th:field="*{imageUrl}">
+            </div>
+            <div class="form-group">
+                <label for="dueDate">Begivenhedsdato:</label>
+                <input type="date" id="dueDate" name="dueDate" th:field="*{dueDate}" required>
+            </div>
+            <div class="form-group">
+                <label for="visibility">Synlighed:</label>
+                <select id="visibility" name="visibility" th:field="*{visibility}">
+                    <option th:each="visibilityOptions : ${visibilityOptions}"
+                            th:value="${visibilityOptions}"
+                            th:text="${visibilityOptions.displayName}">
+                    </option>
+                </select>
+            </div>
+            <div class="button-row-10 justify-start">
+                <button class="btn-link-primary" type="submit">Opdater</button>
+                <button class="btn-link-secondary" type="button" onclick="window.history.back()">Annuller</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/fragments :: footer}"></footer>
+</body>
+</html>

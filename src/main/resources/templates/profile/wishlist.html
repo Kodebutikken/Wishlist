@@ -30,17 +30,24 @@
                 <p class="wishlist-meta" th:if="${wishlist.dueDate != null}"
                    th:text="'Begivenhedsdato: ' + ${wishlist.dueDate}">Begivenhedsdato</p>
                 <p class="wishlist-meta" th:text="'Synlighed: ' + ${wishlist.visibility.displayName}">Synlighed</p>
+                <div th:if="${wishlist.visibility.name() == 'PUBLIC' && wishlist.profileId == viewerId}">
+                    <p class="wishlist-meta"><b>Bemærk:</b> Denne ønskeliste er offentlig og kan ses af alle med linket.</p>
+                </div>
             </div>
 
-            <div class="button-row-10 wishlist-actions">
+            <div th:if="${wishlist.profileId == viewerId}" class="button-row-10 wishlist-actions">
                 <a th:href="@{/wishlists/{id}/wish/add(id=${wishlist.id})}" class="btn-link-primary">Tilføj en gave til
                     listen</a>
                 <a th:if="${wishlist.visibility.name() == 'PRIVATE'}"
                    th:href="@{/wishlists/{id}/share(id=${wishlist.id})}" class="btn-link-secondary">Del denne
                     ønskeliste</a>
                 <a th:href="@{/wishlists}" class="btn-link-secondary">Tilbage til dine ønskelister</a>
+                <a th:href="@{/wishlists/edit/{id}(id=${wishlist.id})}" class="btn-link-secondary">Rediger ønskeliste</a>
                 <a th:href="@{/wishlists/delete/{id}(id=${wishlist.id})}" class="btn-link-destructive delete-button">Slet
                     ønskeliste</a>
+            </div>
+            <div th:if="${wishlist.profileId != viewerId}" class="button-row-10 wishlist-actions">
+                <a th:href="@{/wishlists}" class="btn-link-primary">Tilbage til dine ønskelister</a>
             </div>
         </div>
     </section>

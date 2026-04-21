@@ -83,12 +83,17 @@ public class WishlistRepository {
     }
 
     public void updateWishlist(Wishlist wishlist) {
-        String sql = "UPDATE wishlist SET image_url = ?, due_date = ?, visibility = ? WHERE id = ?";
-        jdbcTemplate.update(sql,
-                wishlist.getImageUrl(),
-                wishlist.getDueDate(),
-                wishlist.getVisibility().name(),
-                wishlist.getId());
+        String sql = "UPDATE wishlist SET name = ?, image_url = ?, due_date = ?, visibility = ? WHERE id = ?";
+        try {
+            jdbcTemplate.update(sql,
+                    wishlist.getName(),
+                    wishlist.getImageUrl(),
+                    wishlist.getDueDate(),
+                    wishlist.getVisibility().name(),
+                    wishlist.getId());
+        } catch (Exception e) {
+            throw new WishlistNotFoundException("Ønskelisten med id " + wishlist.getId() + " blev ikke fundet.");
+        }
     }
 
     public Wishlist getWishlistWithItems(Long id) {
