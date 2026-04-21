@@ -40,7 +40,20 @@ public class ProductController {
         return "product/create";
     }
 
-    @GetMapping("/delete/{id}")
+    @GetMapping("/edit/{id}")
+    public String showEditProductForm(@PathVariable Long id, HttpSession session, Model model) {
+        if (session.getAttribute("profileId") == null) {
+            return "redirect:/profile/login";
+        }
+        Product product = productService.getProductById(id);
+        if (product == null || !productService.getProfileIdFromProduct(id).equals(session.getAttribute("profileId"))) {
+            return "redirect:/products";
+        }
+        model.addAttribute("product", product);
+        return "product/edit";
+    }
+
+    @PostMapping("/delete/{id}")
     public String deleteProduct(@PathVariable Long id, HttpSession session) {
         if (session.getAttribute("profileId") == null) {
             return "redirect:/profile/login";
@@ -50,6 +63,20 @@ public class ProductController {
             return "redirect:/products";
         }
         productService.deleteProduct(id);
+        return "redirect:/products";
+    }
+
+    @PostMapping("/edit/{id}")
+    public String updateProduct(@PathVariable Long id, @ModelAttribute Product product, HttpSession session) {
+        Long profileId = (Long) session.getAttribute("profileId");
+        if (profileId == null) {
+            return "redirect:/profile/login";
+        }
+        Product existingProduct = productService.getProductById(id);
+        if (existingProduct == null || !productService.getProfileIdFromProduct(id).equals(profileId)) {
+            return "redirect:/products";
+        }
+        productService.updateProduct(product);
         return "redirect:/products";
     }
 
@@ -64,6 +91,6 @@ public class ProductController {
         if (redirectWishlistId != null) {
             return "redirect:/wishlists/" + redirectWishlistId + "/wish/add";
         }
-        return "redirect:/wishlists";
+        return "redirect:/products";
     }
 }

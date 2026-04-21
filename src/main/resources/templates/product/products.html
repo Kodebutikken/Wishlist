@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="da">
 <head>
     <meta charset="UTF-8">
     <title>Dine produkter</title>
@@ -25,12 +25,10 @@
                         <p class="product-price" th:text="${product.price} + ' DKK'">Pris: 0 DKK</p>
                     </div>
                 </div>
-
                 <p class="product-description"
                    th:text="${product.description != null and !#strings.isEmpty(product.description)} ? ${product.description} : 'Ingen beskrivelse tilføjet endnu.'">
                     Beskrivelse: Ingen beskrivelse
                 </p>
-
                 <div class="product-actions">
                     <a th:if="${product.productUrl != null and !#strings.isEmpty(product.productUrl)}"
                        th:href="${product.productUrl}"
@@ -39,7 +37,7 @@
                        class="product-link">Gå til produkt</a>
                     <span th:if="${product.productUrl == null or #strings.isEmpty(product.productUrl)}"
                           class="product-link-disabled">Produktlink mangler</span>
-                    <a th:href="@{/products/delete/{id}(id=${product.id})}" class="btn-link-destructive delete-button">Slet produkt</a>
+                    <a th:href="@{/products/edit/{id}(id=${product.id})}" class="btn-link-secondary edit-button">Rediger produkt</a>
                 </div>
             </article>
 
