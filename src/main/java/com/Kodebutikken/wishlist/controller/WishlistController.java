@@ -56,7 +56,7 @@ public class WishlistController {
         model.addAttribute("wishlist", wishlist);
         model.addAttribute("viewerId", profileId);
         model.addAttribute("isViewerOwner", isViewerOwner);
-        return "/profile/wishlist";
+        return "profile/wishlist";
     }
 
     @GetMapping("/create")
