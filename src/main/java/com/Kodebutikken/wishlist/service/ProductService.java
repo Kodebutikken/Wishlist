@@ -22,7 +22,19 @@ public class ProductService {
         return productRepository.getProductById(id);
     }
 
-    public void createProduct(Product product) {
-        productRepository.createProduct(product);
+    public Long getProfileIdFromProduct(Long id) {
+        return productRepository.getProfileIdFromProductId(id);
+    }
+
+    public List<Product> getProductsByProfileId(Long id) {
+        return productRepository.getProductsByProfileId(id);
+    }
+
+    public void createProduct(Product product, Long profileId) {
+        productRepository.createProduct(product, profileId);
+    }
+
+    public void deleteProduct(Long id) {
+        productRepository.deleteProduct(id);
     }
 }

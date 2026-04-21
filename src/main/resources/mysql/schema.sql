@@ -20,7 +20,9 @@ CREATE TABLE product
     name        VARCHAR(255) NOT NULL,
     price       FLOAT        NOT NULL,
     description TEXT,
-    product_url VARCHAR(255)
+    product_url VARCHAR(255),
+    profile_id  BIGINT       NOT NULL,
+    FOREIGN KEY (profile_id) REFERENCES profile (id) ON DELETE CASCADE
 );
 
 CREATE TABLE wishlist
@@ -31,7 +33,7 @@ CREATE TABLE wishlist
     due_date   DATE,
     visibility VARCHAR(20)  NOT NULL,
     profile_id BIGINT       NOT NULL,
-    FOREIGN KEY (profile_id) REFERENCES profile (id)
+    FOREIGN KEY (profile_id) REFERENCES profile (id) ON DELETE CASCADE
 );
 
 CREATE TABLE wishlist_item
@@ -41,5 +43,5 @@ CREATE TABLE wishlist_item
     quantity    INT NOT NULL,
     PRIMARY KEY (wishlist_id, product_id),
     FOREIGN KEY (wishlist_id) REFERENCES wishlist (id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES product (id)
+    FOREIGN KEY (product_id) REFERENCES product (id) ON DELETE CASCADE
 );

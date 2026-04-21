@@ -18,7 +18,7 @@ public class ProfileController {
 
     @GetMapping("/login")
     public String showLogin(HttpSession session) {
-        if(session.getAttribute("profileId") != null) {
+        if (session.getAttribute("profileId") != null) {
             return "redirect:/wishlist/wishlists";
         }
         return "auth/login";
@@ -32,7 +32,7 @@ public class ProfileController {
 
     @GetMapping("/register")
     public String showRegister(HttpSession session, Model model) {
-        if(session.getAttribute("profileId") != null) {
+        if (session.getAttribute("profileId") != null) {
             return "redirect:/wishlist/wishlists";
         }
         Profile profile = new Profile();
@@ -41,6 +41,17 @@ public class ProfileController {
         model.addAttribute("email", profile.getEmail());
         model.addAttribute("password", profile.getPassword());
         return "auth/register";
+    }
+
+    @GetMapping()
+    public String showProfile(HttpSession session, Model model) {
+        if (session.getAttribute("profileId") == null) {
+            return "redirect:/profile/login";
+        }
+        Long profileId = (Long) session.getAttribute("profileId");
+        Profile profile = profileService.getProfileById(profileId);
+        model.addAttribute("profile", profile);
+        return "profile/profile";
     }
 
     @GetMapping("/update")
