@@ -27,7 +27,7 @@ class WishlistControllerTest {
     private WishlistService wishlistService;
 
     @MockitoBean
-    private ProductService productService; // 🔥 vigtigt!
+    private ProductService productService;
 
     @Test
     void createWishlist_success() throws Exception {
