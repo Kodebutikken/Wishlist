@@ -138,36 +138,36 @@ class WishlistRepository {
 %% MODELS
 
 class Product {
-    +id: long
-    +name: String
-    +price: float
-    +description: String
-    +productUrl: String
+    -id: long
+    -name: String
+    -price: float
+    -description: String
+    -productUrl: String
 }
 
 class Profile {
-    +id: long
-    +userName: String
-    +email: String
-    +password: String
+    -id: long
+    -userName: String
+    -email: String
+    -password: String
 }
 
 class Wishlist {
-    +id: Long
-    +name: String
-    +imageUrl: String
-    +dueDate: LocalDate
-    +visibility: Visibility
-    +profileId: Long
-    +items: List~WishlistItem~
-    +itemCount: int
+    -id: Long
+    -name: String
+    -imageUrl: String
+    -dueDate: LocalDate
+    -visibility: Visibility
+    -profileId: Long
+    -items: List~WishlistItem~
+    -itemCount: int
 }
 
 class WishlistItem {
-    +product: Product
-    +quantity: int
-    +reserved: boolean
-    +reservedBy: Long
+    -product: Product
+    -quantity: int
+    -reserved: boolean
+    -reservedBy: Long
 }
 
 class Visibility {
